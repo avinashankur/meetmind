@@ -1,52 +1,21 @@
-"use client";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+import { auth } from "@/lib/auth";
+import { HomeView } from "@/modules/home/auth/ui/views/home-view";
 
-export default function Page() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  const { data: session, error } = authClient.useSession();
-
-  const handleSignOut = () => {
-    authClient.signOut({
-      fetchOptions: {
-        onRequest: () => {
-          setLoading(true);
-        },
-        onSuccess: () => {
-          toast.success("Use signed out");
-          setLoading(false);
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-          setLoading(false);
-        },
-      },
-    });
-  };
-
-  if (error || !session) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">You are not logged in.</p>
-        <Button onClick={() => router.push("/sign-in")}>Go to Sign In</Button>
-      </div>
-    );
+  if (!session) {
+    redirect("/sign-in");
   }
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      Logged in as {session.user.name}
-      <Button disabled={loading} onClick={handleSignOut}>
-        {loading && <Spinner />}
-        Log Out
-      </Button>
+    <div>
+      <HomeView />
     </div>
   );
 }

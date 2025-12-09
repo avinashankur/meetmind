@@ -11,8 +11,10 @@ import { SeparatorPro } from "@/components/common/separator";
 import Link from "next/link";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { SocialButton } from "../social-button";
+import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.email(),
@@ -42,6 +44,7 @@ export const SignInView = () => {
       {
         email: data.email,
         password: data.password,
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -70,22 +73,14 @@ export const SignInView = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          disabled={pending}
-          variant="outline"
-          className="flex-1"
-          type="button"
-        >
-          Sign In with Google
-        </Button>
-        <Button
-          disabled={pending}
-          variant="outline"
-          className="flex-1"
-          type="button"
-        >
-          Sign In with GitHub
-        </Button>
+        <SocialButton provider="google" disabled={pending} className="flex-1">
+          <SiGoogle />
+          Google
+        </SocialButton>
+        <SocialButton provider="github" disabled={pending} className="flex-1">
+          <SiGithub />
+          GitHub
+        </SocialButton>
       </div>
 
       <SeparatorPro className="my-10">Or</SeparatorPro>
