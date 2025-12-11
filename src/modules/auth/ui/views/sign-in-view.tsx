@@ -6,7 +6,6 @@ import FormInput from "@/components/form/form-input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PasswordField } from "@/components/form/password-input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { SeparatorPro } from "@/components/common/separator";
 import Link from "next/link";
 import { useState } from "react";
@@ -50,7 +49,6 @@ export const SignInView = () => {
         onSuccess: () => {
           setPending(false);
           router.push("/");
-          toast.success("Logged in successfully.")
         },
         onError: (ctx) => {
           setPending(false);
@@ -58,8 +56,6 @@ export const SignInView = () => {
         },
       },
     );
-
-    toast.success("Form submitted successfully.");
   };
 
   return (
