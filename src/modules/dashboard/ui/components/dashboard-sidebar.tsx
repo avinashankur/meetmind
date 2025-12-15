@@ -46,7 +46,7 @@ export const DashboardSidebar = () => {
 
   return (
     <Sidebar>
-      <SidebarHeader className="text-sidebar-accent-foreground">
+      <SidebarHeader className="text-sidebar-accent-foreground py-[10px]">
         <Link href="/" className="flex items-center gap-2">
           <Logo />
           <p>MeetMind</p>
@@ -83,7 +83,7 @@ export const DashboardSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SeparatorPro />
+        <Separator />
 
         {/* second section */}
         <SidebarGroup>
