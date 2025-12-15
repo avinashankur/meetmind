@@ -15,7 +15,7 @@ export const agentsRouter = createTRPCRouter({
 
     return data;
   }),
-  getOne: baseProcedure
+  getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       const [existingAgent] = await db
