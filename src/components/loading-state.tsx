@@ -7,7 +7,7 @@ interface Props {
 
 export const LoadingState = ({ title, description }: Props) => {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 text-sm">
       <Spinner className="mt-1" />
       <div>
         <h2 className="font-medium">{title}</h2>
