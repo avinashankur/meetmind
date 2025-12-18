@@ -25,26 +25,27 @@ export const DashboardNavbar = () => {
   }, []);
 
   return (
-    <nav className="bg-background flex items-center gap-x-2 border-b px-2 py-3">
-      <DashboardCommand open={commandOpen} setOpen={setCommandOpen} />
-
-      <Button variant="outline" className="size-9" onClick={toggleSidebar}>
-        {state === "collapsed" || isMobile ? (
-          <PanelLeftIcon className="size-4" />
-        ) : (
-          <PanelLeftCloseIcon className="size-4" />
-        )}
-      </Button>
-      <Button
-        className="text-muted-foreground hover:text-muted-foreground h-9 w-[240px] justify-start font-normal"
-        variant="outline"
-        size="sm"
-        onClick={() => setCommandOpen((open) => !open)}
-      >
-        <SearchIcon />
-        Search
-        <Kbd className="pointer-events-none ml-auto">&#8984; K</Kbd>
-      </Button>
+    <nav className="bg-background border-b px-2 py-3">
+      <div className="mx-auto flex w-full max-w-6xl items-center gap-x-2 px-4">
+        <DashboardCommand open={commandOpen} setOpen={setCommandOpen} />
+        <Button variant="outline" className="size-9" onClick={toggleSidebar}>
+          {state === "collapsed" || isMobile ? (
+            <PanelLeftIcon className="size-4" />
+          ) : (
+            <PanelLeftCloseIcon className="size-4" />
+          )}
+        </Button>
+        <Button
+          className="text-muted-foreground hover:text-muted-foreground h-9 w-[240px] justify-start font-normal"
+          variant="outline"
+          size="sm"
+          onClick={() => setCommandOpen((open) => !open)}
+        >
+          <SearchIcon />
+          Search
+          <Kbd className="pointer-events-none ml-auto">&#8984; K</Kbd>
+        </Button>
+      </div>
     </nav>
   );
 };

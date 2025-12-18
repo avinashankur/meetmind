@@ -37,15 +37,15 @@ export default async function Page({ searchParams }: Props) {
   );
 
   return (
-    <>
-      <AgentsListHeader />
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<AgentsViewLoading />}>
-          <ErrorBoundary fallback={<AgentsViewError />}>
-            <AgentsView />
-          </ErrorBoundary>
-        </Suspense>
-      </HydrationBoundary>
-    </>
+    <div className="max-w-6xl mx-auto px-4 md:px-0 w-full">
+        <AgentsListHeader />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <Suspense fallback={<AgentsViewLoading />}>
+            <ErrorBoundary fallback={<AgentsViewError />}>
+              <AgentsView />
+            </ErrorBoundary>
+          </Suspense>
+        </HydrationBoundary>
+    </div>
   );
 }
