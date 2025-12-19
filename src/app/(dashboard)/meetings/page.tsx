@@ -1,9 +1,11 @@
 import { Suspense } from "react";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorState } from "@/components/error-state";
-import { LoadingState } from "@/components/loading-state";
-import { MeetingsView } from "@/modules/meetings/ui/views/meetings-view";
+import {
+  MeetingsView,
+  MeetingsViewError,
+  MeetingsViewLoading,
+} from "@/modules/meetings/ui/views/meetings-view";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { MeetingsListHeader } from "@/modules/meetings/ui/components/meetings-list-header";
 import { redirect } from "next/navigation";
@@ -23,7 +25,7 @@ export default async function MeetingsPage() {
   void queryClient.prefetchQuery(trpc.meetings.getMany.queryOptions({}));
 
   return (
-    <>
+    <div className="mx-auto w-full max-w-6xl px-4">
       <MeetingsListHeader />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<MeetingsViewLoading />}>
@@ -32,22 +34,6 @@ export default async function MeetingsPage() {
           </ErrorBoundary>
         </Suspense>
       </HydrationBoundary>
-    </>
+    </div>
   );
 }
-
-export const MeetingsViewLoading = () => {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <LoadingState title="Loading Meetings" />
-    </div>
-  );
-};
-
-export const MeetingsViewError = () => {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <ErrorState title="Something went wrong" />
-    </div>
-  );
-};
