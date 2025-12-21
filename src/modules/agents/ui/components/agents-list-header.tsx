@@ -7,6 +7,7 @@ import { useState } from "react";
 import { AgentsSearchFilter } from "./agents-search-filter";
 import { useAgentsFilters } from "../../hooks/use-agents-filter";
 import { DEFAULT_PAGE } from "@/constants";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export const AgentsListHeader = () => {
   const [filters, setFilters] = useAgentsFilters();
@@ -33,16 +34,23 @@ export const AgentsListHeader = () => {
           </Button>
         </div>
 
-        <div className="flex items-center gap-x-2 p-1">
-          <AgentsSearchFilter />
+        <ScrollArea>
+          <div className="flex items-center gap-x-2 p-1">
+            <AgentsSearchFilter />
 
-          {!isFilterEmpty && (
-            <Button variant="outline" size="sm" onClick={onClearFilters} className="h-full">
-              <XCircleIcon />
-              Clear
-            </Button>
-          )}
-        </div>
+            {!isFilterEmpty && (
+              <Button
+                variant="outline"
+                onClick={onClearFilters}
+                className="h-full"
+              >
+                <XCircleIcon />
+                Clear
+              </Button>
+            )}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </>
   );
