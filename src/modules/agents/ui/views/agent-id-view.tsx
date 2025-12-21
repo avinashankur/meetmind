@@ -118,7 +118,7 @@ export const AgentIdView = ({ agentId }: Props) => {
         onOpenChange={setUpdateAgentDialogOpen}
         initialValues={data}
       />
-      <div className="min-h-screen w-full p-6 md:px-4">
+      <div className="">
         <div className="mx-auto max-w-6xl space-y-6 px-4">
           {/* --- BREADCRUMB --- */}
           <Breadcrumb>

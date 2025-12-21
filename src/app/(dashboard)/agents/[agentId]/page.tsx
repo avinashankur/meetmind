@@ -33,13 +33,15 @@ export default async function AgentPage({ params }: Props) {
   );
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<AgentIdLoadingState />}>
-        <ErrorBoundary fallback={<AgentIdErrorState />}>
-          <AgentIdView agentId={agentId} />
-        </ErrorBoundary>
-      </Suspense>
-    </HydrationBoundary>
+    <div className="max-w-6xl mx-auto px-4 w-full mt-10">
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<AgentIdLoadingState />}>
+          <ErrorBoundary fallback={<AgentIdErrorState />}>
+            <AgentIdView agentId={agentId} />
+          </ErrorBoundary>
+        </Suspense>
+      </HydrationBoundary>
+    </div>
   );
 }
 
