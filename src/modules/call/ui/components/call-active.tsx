@@ -14,7 +14,7 @@ export const CallActive = ({ onLeave, meetingName }: Props) => {
   return (
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-zinc-950 text-white">
       {/* --- Header Overlay --- */}
-      <div className="pointer-events-none absolute top-0 left-0 z-10 flex w-full items-center justify-between bg-gradient-to-b from-black/60 to-transparent px-6 py-4">
+      <div className="pointer-events-none absolute top-0 left-0 z-10 flex w-full items-center justify-between bg-linear-to-b from-black/60 to-transparent px-6 py-4">
         {/* Logo & Home Link (Pointer events enabled for this child) */}
         <div className="pointer-events-auto flex items-center gap-3">
           <Link
