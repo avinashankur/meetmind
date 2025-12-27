@@ -14,7 +14,6 @@ import { useState, useEffect } from "react";
 import { useTRPC } from "@/trpc/client";
 
 import { useMutation } from "@tanstack/react-query";
-import { getEnvVar } from "@/lib/env";
 import { CallUI } from "./call-ui";
 
 import "@stream-io/video-react-sdk/dist/css/styles.css";
