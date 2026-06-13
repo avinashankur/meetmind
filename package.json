@@ -7,9 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev:webhook": "ngrok http --url=distinctly-one-crawdad.ngrok-free.app 3000"
+    "dev:webhook": "ngrok http --url=distinctly-one-crawdad.ngrok-free.app 3000",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,css,html,yml,yaml}": "prettier --write"
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.4",
@@ -79,6 +90,8 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4",
