@@ -43,12 +43,12 @@ export const SignInView = () => {
       {
         email: data.email,
         password: data.password,
-        callbackURL: "/",
+        callbackURL: "/meetings",
       },
       {
         onSuccess: () => {
           setPending(false);
-          router.push("/");
+          router.push("/meetings");
         },
         onError: (ctx) => {
           setPending(false);
@@ -63,17 +63,24 @@ export const SignInView = () => {
       <div className="mb-10">
         <h2 className="text-2xl font-semibold">Sign In</h2>
         <p className="text-muted-foreground text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam,
-          delectus.
+          Welcome back! Please enter your details to sign in.
         </p>
       </div>
 
       <div className="flex items-center gap-2">
-        <SocialButton provider="google" disabled={pending} className="flex-1">
+        <SocialButton
+          provider="google"
+          disabled={pending}
+          className="flex-1 rounded-xl py-5 hover:bg-neutral-50"
+        >
           <SiGoogle />
           Google
         </SocialButton>
-        <SocialButton provider="github" disabled={pending} className="flex-1">
+        <SocialButton
+          provider="github"
+          disabled={pending}
+          className="flex-1 rounded-xl py-5 hover:bg-neutral-50"
+        >
           <SiGithub />
           GitHub
         </SocialButton>
@@ -95,7 +102,11 @@ export const SignInView = () => {
           {!!error && <p className="text-destructive text-sm">{error}</p>}
 
           {/* Submit Button */}
-          <Button type="submit" disabled={pending} className="w-full">
+          <Button
+            type="submit"
+            disabled={pending}
+            className="shadow-button-inset w-full rounded-2xl bg-linear-to-b from-neutral-700 to-neutral-900 py-6 hover:bg-neutral-800"
+          >
             {pending && <Spinner />}
             Submit
           </Button>
@@ -103,8 +114,8 @@ export const SignInView = () => {
       </FormProvider>
 
       {/* Don't have an account button */}
-      <div className="mt-10 flex items-center gap-1 text-sm">
-        <p className="">Don&apos;t have an account?</p>
+      <div className="mt-5 flex items-center justify-center gap-1 text-sm">
+        <p>Don&apos;t have an account?</p>
         <Link href="/sign-up" className="font-semibold underline">
           Sign Up
         </Link>

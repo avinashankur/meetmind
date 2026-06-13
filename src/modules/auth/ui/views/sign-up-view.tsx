@@ -73,20 +73,27 @@ export const SignUpView = () => {
 
   return (
     <div className="mx-auto max-w-md">
-      <div className="mb-5">
-        <h2 className="text-2xl font-semibold">Sign Up</h2>
+      <div className="mb-10">
+        <h2 className="text-2xl font-semibold">Create an account</h2>
         <p className="text-muted-foreground text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam,
-          delectus.
+          Welcome! Please enter your details to create an account.
         </p>
       </div>
 
       <div className="flex items-center gap-2">
-        <SocialButton provider="google" disabled={pending} className="flex-1">
+        <SocialButton
+          provider="google"
+          disabled={pending}
+          className="flex-1 rounded-xl py-5 hover:bg-neutral-50"
+        >
           <SiGoogle />
           Google
         </SocialButton>
-        <SocialButton provider="github" disabled={pending} className="flex-1">
+        <SocialButton
+          provider="github"
+          disabled={pending}
+          className="flex-1 rounded-xl py-5 hover:bg-neutral-50"
+        >
           <SiGithub />
           GitHub
         </SocialButton>
@@ -119,7 +126,11 @@ export const SignUpView = () => {
           {!!error && <p className="text-destructive text-sm">{error}</p>}
 
           {/* Submit Button */}
-          <Button type="submit" disabled={pending} className="w-full">
+          <Button
+            type="submit"
+            disabled={pending}
+            className="shadow-button-inset w-full rounded-2xl bg-linear-to-b from-neutral-700 to-neutral-900 py-6 hover:bg-neutral-800"
+          >
             {pending && <Spinner />}
             Submit
           </Button>
@@ -127,7 +138,7 @@ export const SignUpView = () => {
       </FormProvider>
 
       {/* Don't have an account button */}
-      <div className="mt-10 flex items-center gap-1 text-sm">
+      <div className="mt-5 flex items-center justify-center gap-1 text-sm">
         <p className="">Already have an account?</p>
         <Link href="/sign-in" className="font-semibold underline">
           Sign In

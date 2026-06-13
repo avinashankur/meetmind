@@ -94,7 +94,7 @@ const FormInput: React.FC<FormInputProps> = memo(
                     onChange(e);
                     onInputChange(e.target.value);
                   }}
-                  className={`${className} placeholder:text-gray-light h-12 tracking-wider`}
+                  className={`${className} placeholder:text-gray-light h-12 rounded-xl tracking-wider`}
                   {...fieldProps}
                   {...rest}
                 />
