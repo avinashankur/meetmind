@@ -4,7 +4,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 export const LandingSection = () => {
   return (
-    <section className="grid min-h-[91.6vh] place-content-center bg-yellow-200 px-6 py-24">
+    <section className="grid min-h-screen place-content-center bg-yellow-200 px-6 py-24">
       <div className="mx-auto w-full max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-black/5 px-4 py-2 text-sm font-medium text-slate-900">

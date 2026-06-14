@@ -11,7 +11,7 @@ export const FooterLanding = () => {
             {/* Brand Section */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center space-x-2">
-                <Logo />
+                <Logo className="size-8" />
                 <h1 className="text-lg font-semibold">MeetMind AI</h1>
               </div>
               <p className="max-w-xs text-sm text-neutral-400">

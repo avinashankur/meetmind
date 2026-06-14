@@ -6,7 +6,7 @@ export const HeaderLanding = () => {
     <div className="bg-yellow-200">
       <header className="mx-auto flex max-w-7xl items-center justify-between py-3">
         <div className="flex items-center gap-x-2">
-          <Logo className="size-10" />
+          <Logo className="size-8" />
           <h3 className="font-semibold">MeetMind AI</h3>
         </div>
 
