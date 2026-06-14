@@ -8,7 +8,7 @@ import {
 
 export const PrivacySection = () => {
   return (
-    <section className="min-h-screen bg-slate-100 py-42">
+    <section className="min-h-screen bg-slate-100 px-4 py-42">
       <H1>Privacy and security first</H1>
 
       {/* Accordions */}
@@ -17,7 +17,7 @@ export const PrivacySection = () => {
           type="single"
           collapsible
           defaultValue="data-collected"
-          className="w-xl"
+          className="w-fit sm:w-xl"
         >
           <AccordionItem value="data-collected" className="py-3">
             <AccordionTrigger className="text-md">

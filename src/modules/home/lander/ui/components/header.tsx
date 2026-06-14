@@ -4,7 +4,7 @@ import Link from "next/link";
 export const HeaderLanding = () => {
   return (
     <div className="bg-yellow-200">
-      <header className="mx-auto flex max-w-7xl items-center justify-between py-3">
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         <div className="flex items-center gap-x-2">
           <Logo className="size-8" />
           <h3 className="font-semibold">MeetMind AI</h3>
@@ -19,7 +19,7 @@ export const HeaderLanding = () => {
           </Link>
           <Link
             href="/sign-up"
-            className="shadow-button-inset rounded-xl bg-linear-to-b from-green-500 to-green-600 px-5 py-2.5 text-sm text-white hover:bg-green-700"
+            className="shadow-button-inset hidden rounded-xl bg-linear-to-b from-green-500 to-green-600 px-5 py-2.5 text-sm text-white hover:bg-green-700 sm:inline-block"
           >
             Get Started For Free
           </Link>
