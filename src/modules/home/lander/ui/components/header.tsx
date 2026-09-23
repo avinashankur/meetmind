@@ -1,30 +1,48 @@
-import { Logo } from "../../../../../../public/logo";
+"use client";
+
 import Link from "next/link";
+import { Logo } from "../../../../../../public/logo";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const HeaderLanding = () => {
   return (
-    <div className="bg-yellow-200">
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-x-2">
-          <Logo className="size-8" />
-          <h3 className="font-semibold">MeetMind AI</h3>
-        </div>
+    <header className="absolute top-0 right-0 left-0 z-50 w-full bg-transparent">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5 sm:px-16 sm:py-6">
+        {/* Brand */}
+        <Link
+          href="/"
+          className="group flex items-center gap-2.5 transition-opacity hover:opacity-85"
+        >
+          <Logo
+            size={28}
+            className="shrink-0 transition-transform group-hover:scale-105"
+          />
+          <span className="text-primary text-base font-semibold tracking-tight">
+            MeetMind
+          </span>
+        </Link>
 
-        <div className="space-x-4">
+        {/* Seamless Actions (No Navigation Links) */}
+        <div className="flex items-center gap-4 sm:gap-6">
           <Link
             href="/sign-in"
-            className="text-sm font-semibold text-neutral-800 underline-offset-4"
+            className="text-secondary hover:text-primary font-mono text-xs tracking-wider uppercase transition-colors"
           >
-            Login
+            Sign In
           </Link>
-          <Link
-            href="/sign-up"
-            className="shadow-button-inset hidden rounded-xl bg-linear-to-b from-green-500 to-green-600 px-5 py-2.5 text-sm text-white hover:bg-green-700 sm:inline-block"
+          <Button
+            asChild
+            size="sm"
+            className="bg-primary text-primary-foreground h-8 rounded-full px-4 font-mono text-xs tracking-wider uppercase shadow-xs transition-all hover:opacity-90"
           >
-            Get Started For Free
-          </Link>
+            <Link href="/sign-up" className="flex items-center gap-1.5">
+              <span>Get Started</span>
+              <ArrowRight className="size-3" />
+            </Link>
+          </Button>
         </div>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 };

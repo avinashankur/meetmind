@@ -1,191 +1,107 @@
----
-name: MeetMind
-colors:
-  surface: "oklch(1 0 0)"
-  surface-dim: "oklch(0.97 0 0)"
-  surface-bright: "oklch(1 0 0)"
-  surface-container-lowest: "oklch(1 0 0)"
-  surface-container-low: "oklch(0.985 0 0)"
-  surface-container: "oklch(0.97 0 0)"
-  surface-container-high: "oklch(0.922 0 0)"
-  surface-container-highest: "oklch(0.708 0 0)"
-  on-surface: "oklch(0.145 0 0)"
-  on-surface-variant: "oklch(0.556 0 0)"
-  inverse-surface: "oklch(0.145 0 0)"
-  inverse-on-surface: "oklch(0.985 0 0)"
-  outline: "oklch(0.922 0 0)"
-  outline-variant: "oklch(0.97 0 0)"
-  surface-tint: "oklch(0.205 0 0)"
-  primary: "oklch(0.205 0 0)"
-  on-primary: "oklch(0.985 0 0)"
-  primary-container: "oklch(0.922 0 0)"
-  on-primary-container: "oklch(0.145 0 0)"
-  inverse-primary: "oklch(0.985 0 0)"
-  secondary: "oklch(0.97 0 0)"
-  on-secondary: "oklch(0.205 0 0)"
-  secondary-container: "oklch(0.922 0 0)"
-  on-secondary-container: "oklch(0.145 0 0)"
-  tertiary: "oklch(0.97 0 0)"
-  on-tertiary: "oklch(0.205 0 0)"
-  tertiary-container: "oklch(0.922 0 0)"
-  on-tertiary-container: "oklch(0.145 0 0)"
-  error: "oklch(0.577 0.245 27.325)"
-  on-error: "oklch(0.985 0 0)"
-  error-container: "oklch(0.704 0.191 22.216)"
-  on-error-container: "oklch(0.985 0 0)"
-  primary-fixed: "oklch(0.205 0 0)"
-  primary-fixed-dim: "oklch(0.145 0 0)"
-  on-primary-fixed: "oklch(0.985 0 0)"
-  on-primary-fixed-variant: "oklch(0.97 0 0)"
-  secondary-fixed: "oklch(0.97 0 0)"
-  secondary-fixed-dim: "oklch(0.922 0 0)"
-  on-secondary-fixed: "oklch(0.205 0 0)"
-  on-secondary-fixed-variant: "oklch(0.145 0 0)"
-  tertiary-fixed: "oklch(0.97 0 0)"
-  tertiary-fixed-dim: "oklch(0.922 0 0)"
-  on-tertiary-fixed: "oklch(0.205 0 0)"
-  on-tertiary-fixed-variant: "oklch(0.145 0 0)"
-  background: "oklch(1 0 0)"
-  on-background: "oklch(0.145 0 0)"
-  surface-variant: "oklch(0.97 0 0)"
-typography:
-  display:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 48px
-    fontWeight: "700"
-    lineHeight: 56px
-    letterSpacing: -0.02em
-  headline-lg:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 32px
-    fontWeight: "600"
-    lineHeight: 40px
-    letterSpacing: -0.02em
-  headline-md:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 24px
-    fontWeight: "600"
-    lineHeight: 32px
-    letterSpacing: -0.01em
-  title-lg:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 20px
-    fontWeight: "600"
-    lineHeight: 28px
-  body-lg:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 18px
-    fontWeight: "400"
-    lineHeight: 28px
-  body-md:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 16px
-    fontWeight: "400"
-    lineHeight: 24px
-  label-md:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 14px
-    fontWeight: "500"
-    lineHeight: 20px
-  label-sm:
-    fontFamily: "Geist, Inter, sans-serif"
-    fontSize: 12px
-    fontWeight: "500"
-    lineHeight: 16px
-rounded:
-  sm: "calc(0.625rem - 4px)"
-  DEFAULT: "0.625rem"
-  md: "calc(0.625rem - 2px)"
-  lg: "0.625rem"
-  xl: "calc(0.625rem + 4px)"
-  full: "9999px"
-spacing:
-  base: "4px"
-  xs: "8px"
-  sm: "12px"
-  md: "16px"
-  lg: "24px"
-  xl: "32px"
-  2xl: "48px"
-  container-padding: "24px"
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.DEFAULT}"
-    padding: "{spacing.md}"
-  button-secondary:
-    backgroundColor: "{colors.secondary}"
-    textColor: "{colors.on-secondary}"
-    typography: "{typography.label-md}"
-    rounded: "{rounded.DEFAULT}"
-    padding: "{spacing.md}"
-  card-base:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.on-surface}"
-    rounded: "{rounded.xl}"
-    padding: "{spacing.lg}"
-  input-field:
-    backgroundColor: transparent
-    textColor: "{colors.on-surface}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.DEFAULT}"
-    padding: "{spacing.sm}"
-    borderColor: "{colors.outline}"
+# MeetMind Design System — Built for Intelligent Performance
+
+## 1. Design Philosophy
+
+**MeetMind** embodies an aesthetic of **industrial precision and editorial restraint**. Rather than generic dashboards or disconnected floating cards, the design is structured around a continuous paper canvas, tactile glass materials, and an iconic **7-row LED-dot typographic matrix**.
+
+The design system merges the physical tactility of high-end acoustic instrumentation (Teenage Engineering, Dieter Rams, Braun) with modern web engineering (rigid container scaling, WebGL/SVG noise, hardware-accelerated video backdrops).
+
+### Anti-Card-Fatigue Principle
+
+Rigid glass cards are strictly confined to the hero metric units (`Speed`, `Context`, `Connections`). All downstream sections intentionally avoid nested cards, card-within-card containers, or generic bento boxes. Instead, content flows directly on the continuous tactile `--paper` canvas with open editorial typography, spec sheets, and crisp hairline rule dividers (`border-[#222222]/10`).
+
 ---
 
-## Brand & Style
+## 2. Core Tokens & Palette
 
-The MeetMind design system represents a sleek, professional, and intelligent approach to virtual meetings and AI orchestration. The style embraces a minimalist, high-contrast aesthetic typical of the "New York" shadcn/ui design language.
+### Colors
 
-The primary goal is to minimize cognitive load while presenting complex AI data, transcriptions, and meeting summaries in a highly legible format. The brand personality is functional, razor-sharp, and unobtrusive, allowing the user to focus on their meetings and AI interactions.
+| Token            | Light Value             | Dark Value              | Purpose                                                |
+| :--------------- | :---------------------- | :---------------------- | :----------------------------------------------------- |
+| `--paper`        | `#ececeb`               | `#111111`               | Primary stage & section canvas (tactile paper texture) |
+| `--paper-subtle` | `#e4e4e3`               | `#181818`               | Secondary containers and section dividers              |
+| `--ink`          | `#222222`               | `#f4f4f4`               | High-contrast display headings and titles              |
+| `--copy`         | `#4a4a4a`               | `#a1a1aa`               | Muted editorial body text and descriptions             |
+| `--led-accent`   | `#ad314d`               | `#f43f5e`               | Crimson LED-dot display typography & active indicators |
+| `--glass-line`   | `rgba(255,255,255,.36)` | `rgba(255,255,255,.15)` | 1px luminous edge border on glass cards                |
+| `--card-shadow`  | `rgba(50,28,39,.30)`    | `rgba(0,0,0,.60)`       | Deep ambient drop shadow for cards                     |
 
-## Colors
+### Proportions & Grid Units
 
-The palette is built on stark contrasts using OKLCH color spaces, ensuring accessible luminance out-of-the-box. It intentionally avoids saturated primary colors in favor of a sophisticated monochrome spectrum, using color exclusively for semantic meaning (like destructive actions) or data visualization.
+- **Base Card Dimensions**: `429px × 554px` (aspect ratio: `429 / 554`).
+- **Card Radius**: `17px` at 429px width (`calc(var(--card-w) * 17 / 429)`).
+- **Proportional Unit (`--u`)**: `calc(100cqw / 429)`. All internal card typography, paddings, and graphic elements scale mathematically with `--u` so internal layouts never break across screen widths.
+- **Stage Container Spacing**:
+  - `--gap`: `clamp(8px, 1.5vw, 23px)`
+  - `--gutter`: `clamp(14px, 3.6vw, 54px)`
+  - `--content-max`: `calc(3 * 429px + 2 * var(--gap))` (~1333px max)
+  - `--pad-top`: `clamp(20px, 9.6vh, 94px)`
+  - `--pad-bottom`: `clamp(16px, 3vh, 52px)`
 
-- **Primary:** Near-black `oklch(0.205 0 0)` on white backgrounds to create high-contrast focal points.
-- **Backgrounds:** Pure white `oklch(1 0 0)` to provide a clean canvas for video streams and text-heavy summaries.
-- **Accents:** Muted light grays `oklch(0.97 0 0)` for secondary actions and structural separation, maintaining a calm, un-opinionated UI.
-- **Destructive:** A vibrant, urgent red `oklch(0.577 0.245 27.325)` used sparingly for destructive actions like ending calls or deleting agents.
+---
 
-## Typography
+## 3. Typography Architecture
 
-Typography in MeetMind is dense, modern, and pragmatic, optimizing for deep reading of AI-generated summaries and long meeting transcripts.
+### Font Stack
 
-- **Legibility:** Medium and Semi-bold weights are employed for structural hierarchy, guiding the eye through long forms and agent configurations.
-- **Density:** Tight letter-spacing (e.g., `-0.02em` on headlines) is used to create a more compact, refined look, typical of modern technical tools.
-- **Data Display:** Monospaced elements or tabular figures should be utilized when displaying timestamps or numerical metrics inside the meeting dashboard.
+- **Primary Typeface**: `"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
+  - `font-optical-sizing: auto;`
+  - `-webkit-font-smoothing: antialiased;`
+  - `text-rendering: geometricPrecision;`
+- **Monospace Typeface**: `"JetBrains Mono", monospace` (`--font-mono`)
+  - Subsets: `latin`
+  - Applied to all telemetry ledgers, VU decibel readouts, timestamps, cryptosheet specs, code blocks, and micro badges.
+- **Headline Weights**: `400` (Regular) to `600` (Semi-bold) with strict line-heights (`1.22` for display masthead, `1.62` for body text).
 
-## Layout & Spacing
+### LED-Dot Vector Matrix Glyphs
 
-The layout follows a structured, application-centric grid. Since MeetMind is a productivity tool, screen real estate is optimized for content density without feeling crowded.
+- Custom 7-row bitmap vector SVG renderer ([`led-dots.tsx`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/led-dots.tsx)).
+- Used for hero brand terms (e.g. `Intelligent` in `--led-accent`), key telemetry metrics (`118 ms`, `2.4 M`, `16 K`), and step indicators.
+- Grid pitch: `pitchX = 4` (words) or `5` (metrics), `pitchY = 4`, `gap = 1`.
 
-- **Rhythm:** A 4px base scale governs all micro-spacing, while larger macro-sections jump in 8px increments.
-- **Containers:** Dashboard views and meeting lists utilize generous padding (24px) but contain the content within constrained max-widths to maintain optimal line lengths for reading.
-- **Modularity:** UI components are highly modular, cleanly separated by subtle 1px borders rather than heavy shadows or dramatic background shifts.
+---
 
-## Elevation & Depth
+## 4. Materials & Elevation
 
-Depth is handled very subtly in MeetMind. We avoid heavy drop-shadows, preferring crisp borders and tonal background shifts to define hierarchy.
+### 1. Multi-Layer Glass Gradient Stacks
 
-- **Surfaces:** Layers are defined by their border (`oklch(0.922 0 0)`) rather than shadow. A card sits on the surface flush but is defined by a crisp 1px outline.
-- **Modals & Dialogs:** When an element must float above the UI (like a dialog or command palette), a very subtle, tight shadow and a background overlay (`oklch(1 0 0 / 80%)` with backdrop blur) are used to isolate context.
-- **Interactive States:** Hover states use slight background darkening (`surface-dim`) rather than physical "lifting" effects, keeping the UI grounded and flat.
+Cards use composite multi-gradient backgrounds with up to 19 radial and linear stops, giving luminous volume that mimics optical glass:
 
-## Shapes
+- **Speed Card**: Rose / Ruby / Wine radial gradients (`#bd4468` to `#8c1320`) with vector radar gauge.
+- **Context Card**: Orchid / Amethyst / Berry gradients (`#c9b5e1` to `#793246`) with glass window tile wall.
+- **Connections Card**: Coral / Tangerine / Crimson gradients (`#d84736` to `#d34239`) with circuit network map.
 
-The shape language is slightly softened but retains a professional rigidity.
+### 2. Sheen & Grain
 
-- **Radius Base:** The fundamental radius is `0.625rem` (10px). This provides a modern, friendly touch without becoming overly bubbly.
-- **Components:** Interactive elements like buttons and inputs use the standard radius, while larger container cards use an extended `rounded-xl` to frame content elegantly.
-- **Avatars:** User and AI Agent avatars are strictly rounded (`full`), creating visual distinction from the structurally rectangular cards and inputs.
+- **Card Sheen (`::before`)**: `mix-blend-mode: screen` with dual linear and radial gloss angles.
+- **Tactile Grain (`.card__grain`)**: SVG `feTurbulence` fractal noise filter (`baseFrequency="0.54"`, 3 octaves) blended with `mix-blend-mode: soft-light` at `46%` to `68%` opacity.
 
-### Data Visualization & Avatars
+---
 
-AI agents and users are represented with generated DiceBear avatars. The contrast between organic, rounded avatars and the sharp, monochrome UI creates a distinct visual hierarchy that makes speakers easily identifiable in the post-meeting chat and transcripts.
+## 5. Section Structure Across the Platform
 
-### AI Orchestration Elements
+1. **Stage 1: The Performance Stage (Hero)**
+   - Two-line masthead with crimson LED-dot `Intelligent`.
+   - Static, zero-lag high-resolution WebP background backdrop.
+   - The Three Glass Metric Cards (`Speed`, `Context`, `Connections`) with proportional scaling.
 
-When displaying AI generation (e.g., "Summarizing meeting..."), we use subtle motion and localized loading states rather than blocking the entire screen. The interface remains interactive, reinforcing the platform's asynchronous, intelligent capabilities.
+2. **Stage 2: The Acoustic Precision Deck (Voice Engine)**
+   - Industrial hardware-inspired audio console with live vector oscilloscope waveforms.
+   - Twin analog-style LED VU level decibel meters.
+   - 3-point telemetry ledger with LED-dot metrics (`184ms`, `0` bot invites, `48kHz Opus`).
+
+3. **Stage 3: The Transformation Workbench (Synthesis Engine)**
+   - 3-phase visual pipeline (`01 Diarization`, `02 Reasoning Core`, `03 Dispatch Matrix`).
+   - Dual-pane live workbench: Raw dialogue input stream → Instant executive action matrix with interactive checkable items.
+
+4. **Stage 4: The Semantic Command Terminal (Conversational Memory)**
+   - Interactive search terminal with blinking prompt and preset query keys.
+   - Verbatim verified match with integrated miniature audio waveform player.
+   - Cryptographically attested provenance ledger.
+
+5. **Stage 5: Cryptographic Defense & Technical Disclosures (Security & FAQ)**
+   - Cryptographic defense ledger with protocol specs and active enforcement badges.
+   - Two-column technical disclosure deck with category navigation and audited compliance details.
+
+6. **Stage 6: The Actionable Finale (CTA)**
+   - Clean, open typographic finale leading into the minimalist footer with embedded theme toggle.
