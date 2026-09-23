@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
 
 interface CustomLogoProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
@@ -9,7 +9,7 @@ interface CustomLogoProps extends React.SVGProps<SVGSVGElement> {
 
 export const Logo = ({
   size = 40,
-  backgroundColor = "#00DC33",
+  backgroundColor = "#ad314d",
   iconColor = "#ffffff",
   className,
   ...props

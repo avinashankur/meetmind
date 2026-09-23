@@ -1,63 +1,130 @@
-import { H1 } from "@/components/typography/typography-h1";
-import { FileWarning, Users, PenLine, History } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const ProblemSection = () => {
-  const problems = [
-    {
-      icon: <FileWarning className="h-5 w-5 text-slate-400" />,
-      title: "No more scattered notes",
-      description:
-        "Stop digging through different apps to find what was decided. Everything is unified in one place.",
-    },
-    {
-      icon: <Users className="h-5 w-5 text-slate-400" />,
-      title: "No more guessing who said what",
-      description:
-        "Accurate speaker attribution ensures everyone is accountable for their action items.",
-    },
-    {
-      icon: <PenLine className="h-5 w-5 text-slate-400" />,
-      title: "No more rewriting summaries",
-      description:
-        "Get beautifully formatted meeting summaries the moment your video call ends.",
-    },
-    {
-      icon: <History className="h-5 w-5 text-slate-400" />,
-      title: "No more losing context",
-      description:
-        "Ask your AI about past meetings to instantly recall crucial details and context.",
-    },
-  ];
-
   return (
-    <section className="flex min-h-screen items-center bg-slate-50 px-6 py-32">
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="mx-auto mb-16 max-w-3xl">
-          <H1 className="mb-6 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
-            Most meetings disappear the moment they end
-          </H1>
-          <p className="text-base leading-relaxed text-slate-600">
-            Decisions get buried in chat threads. Action items are missed.
-            People who could not attend have to rely on second-hand updates.
-            MeetMind keeps the conversation useful after the call is over.
-          </p>
-        </div>
+    <section
+      id="features"
+      className="border-t border-zinc-200/80 bg-white px-6 py-14 sm:py-20 dark:border-zinc-800/80 dark:bg-zinc-950"
+    >
+      <div className="mx-auto w-full max-w-5xl">
+        {/* Typographic Split Statement - Compact & High-Density */}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          {/* Left: The Old Way (Muted & Crossed out) */}
+          <div className="space-y-5 lg:col-span-5">
+            <div>
+              <span className="text-[11px] font-semibold tracking-wider text-rose-500 uppercase">
+                The Legacy Way
+              </span>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-100">
+                What happens to{" "}
+                <span className="font-serif font-normal text-zinc-400 italic dark:text-zinc-500">
+                  most meetings
+                </span>
+                .
+              </h2>
+            </div>
 
-        <div className="mx-auto max-w-3xl">
-          <div className="space-y-12">
-            {problems.map((problem, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <div className="mt-0.5 flex-shrink-0">{problem.icon}</div>
-                <div>
-                  <h3 className="mb-1 text-base font-semibold text-slate-900">
-                    {problem.title}
-                  </h3>
-                  <p className="text-base leading-relaxed text-slate-600">
-                    {problem.description}
-                  </p>
-                </div>
+            <div className="space-y-4 text-xs text-zinc-500 dark:text-zinc-400">
+              <div className="border-l-2 border-zinc-200 pl-3 dark:border-zinc-800">
+                <p className="font-medium text-zinc-400 line-through dark:text-zinc-500">
+                  Scattered notes in three different tools
+                </p>
+                <p className="mt-0.5 text-[11px]">
+                  Decisions get buried in DMs, forgotten in personal docs, or
+                  lost forever.
+                </p>
               </div>
-            ))}
+
+              <div className="border-l-2 border-zinc-200 pl-3 dark:border-zinc-800">
+                <p className="font-medium text-zinc-400 line-through dark:text-zinc-500">
+                  Typing notes while pretending to listen
+                </p>
+                <p className="mt-0.5 text-[11px]">
+                  The person taking notes can never fully contribute to the
+                  brainstorm or negotiation.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-zinc-200 pl-3 dark:border-zinc-800">
+                <p className="font-medium text-zinc-400 line-through dark:text-zinc-500">
+                  Unclear ownership on action items
+                </p>
+                <p className="mt-0.5 text-[11px]">
+                  Deliverables evaporate, creating endless status meetings just
+                  to re-align.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Center Divider with Glow */}
+          <div className="hidden lg:col-span-2 lg:flex lg:justify-center">
+            <div className="h-44 w-px bg-gradient-to-b from-transparent via-emerald-500/40 to-transparent" />
+          </div>
+
+          {/* Right: The MeetMind Standard (Clean, Luminous, Empowering) */}
+          <div className="space-y-5 lg:col-span-5">
+            <div>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                <Sparkles className="size-3" />
+                <span>The MeetMind Standard</span>
+              </span>
+              <h3 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-zinc-50">
+                Conversations turned into{" "}
+                <span className="font-serif font-normal text-emerald-600 italic dark:text-emerald-400">
+                  permanent intelligence
+                </span>
+                .
+              </h3>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="border-l-2 border-emerald-500 pl-3">
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  Real-time voice participation
+                </p>
+                <p className="mt-0.5 text-[11px] text-zinc-600 dark:text-zinc-400">
+                  An AI teammate in the room that answers questions verbally,
+                  fact-checks, and keeps momentum high.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-emerald-500 pl-3">
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  Sub-5s structured executive briefs
+                </p>
+                <p className="mt-0.5 text-[11px] text-zinc-600 dark:text-zinc-400">
+                  Formatted markdown briefs, core takeaways, and auto-tagged
+                  deliverables ready to paste anywhere.
+                </p>
+              </div>
+
+              <div className="border-l-2 border-emerald-500 pl-3">
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                  Queryable meeting memory forever
+                </p>
+                <p className="mt-0.5 text-[11px] text-zinc-600 dark:text-zinc-400">
+                  Revisit any discussion months later and ask questions in plain
+                  English to get immediate answers.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="h-8 rounded-full px-3.5 text-[11px] font-medium"
+              >
+                <Link href="/sign-up" className="flex items-center gap-1.5">
+                  <span>Experience The Difference</span>
+                  <ArrowRight className="size-3" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

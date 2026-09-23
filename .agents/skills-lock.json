@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "packageVersion": "2.3.0",
+  "installedSkills": {
+    "fronted-coding-standards": {
+      "version": "2.3.0"
+    },
+    "git-commit": {
+      "version": "2.3.0"
+    },
+    "git-stage": {
+      "version": "2.3.0"
+    },
+    "humanizer": {
+      "version": "2.3.0"
+    },
+    "improve-codebase-architecture": {
+      "version": "2.3.0"
+    },
+    "issue-tracker-gh": {
+      "version": "2.3.0"
+    },
+    "project-docs": {
+      "version": "2.3.0"
+    },
+    "shadcn": {
+      "version": "2.3.0"
+    }
+  }
+}
