@@ -50,7 +50,10 @@ export const SocialButton = ({
       variant="outline"
       type="button"
       disabled={loading || props.disabled}
-      className={cn("w-full", className)}
+      className={cn(
+        "border-border bg-card/80 text-primary hover:border-primary/40 hover:bg-card h-11 w-full rounded-xl border font-mono text-xs tracking-wider uppercase shadow-xs backdrop-blur-sm transition-all active:scale-[0.99]",
+        className,
+      )}
       onClick={handleLogin}
       {...props}
     >
