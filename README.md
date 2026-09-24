@@ -25,6 +25,7 @@ The project is built as a modern full-stack Next.js application with a typed API
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [Future Improvements](#future-improvements)
+- [Documentation](#documentation)
 
 ## Project Explanation
 
@@ -521,6 +522,8 @@ When Stream sends `message.new`:
 The result is a meeting-specific assistant that can answer questions about the meeting after it has ended.
 
 ## Architecture
+
+> For full C4 diagrams, container inventories, sequence flows, and infrastructure models, see [ARCHITECTURE.md](ARCHITECTURE.md). For AI coding assistant guidelines and project invariants, see [CONTEXT.md](CONTEXT.md).
 
 MeetMind uses a modular architecture. Each major product area has its own module under `src/modules`.
 
@@ -1097,6 +1100,15 @@ Possible next steps:
 - Add better webhook logging and retry visibility.
 - Add full transcript-based post-meeting chat retrieval.
 - Add notifications when processing completes.
+
+## Documentation
+
+- [System Architecture](ARCHITECTURE.md) — Comprehensive C4 model, container inventory, data flow sequences, and infrastructure.
+- [AI & Developer Context](CONTEXT.md) — Dense primer covering stack versions, invariants, glossary, and rules for AI assistants and contributors.
+- [Design System](DESIGN.md) — Industrial design philosophy, semantic CSS tokens, paper canvas styling, and LED matrix spec.
+- [Architecture Decision Records](docs/adr/) — Log of critical architectural trade-offs and decisions.
+- [Concepts & Deep-Dives](docs/concepts/) — Conceptual guides and domain algorithms.
+- [Runbooks & Playbooks](docs/runbooks/) — Local development and production troubleshooting runbooks.
 
 ## License
 
