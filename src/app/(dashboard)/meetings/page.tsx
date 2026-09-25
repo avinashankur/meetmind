@@ -35,7 +35,7 @@ export default async function MeetingsPage({ searchParams }: Props) {
   );
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4">
+    <div className="mx-auto w-full max-w-6xl px-6 py-8 sm:px-16 sm:py-10">
       <MeetingsListHeader />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<MeetingsViewLoading />}>

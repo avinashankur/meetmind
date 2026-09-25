@@ -1,4 +1,10 @@
-import { ResponsiveDialog } from "@/components/responsive-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { MeetingForm } from "./meeting-form";
 import { MeetingGetOne } from "../../types";
 
@@ -14,19 +20,22 @@ export const UpdateMeetingDialog = ({
   initialValues,
 }: Props) => {
   return (
-    <ResponsiveDialog
-      title="Edit Meeting"
-      description="Edit meeting"
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <MeetingForm
-        onSuccess={() => {
-          onOpenChange(false);
-        }}
-        onCancel={() => onOpenChange(false)}
-        initialValues={initialValues}
-      />
-    </ResponsiveDialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit meeting</DialogTitle>
+          <DialogDescription>
+            Update meeting configuration details.
+          </DialogDescription>
+        </DialogHeader>
+        <MeetingForm
+          onSuccess={() => {
+            onOpenChange(false);
+          }}
+          onCancel={() => onOpenChange(false)}
+          initialValues={initialValues}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };

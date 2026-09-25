@@ -1,77 +1,71 @@
+"use client";
+
 import {
   CircleCheckIcon,
   CircleXIcon,
-  ClockArrowUp,
+  ClockArrowUpIcon,
   LoaderIcon,
   VideoIcon,
+  SlidersHorizontalIcon,
 } from "lucide-react";
 import { MeetingStatus } from "../../types";
 import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
-import { CommandSelect } from "@/components/command-select";
-
-const options = [
-  {
-    id: MeetingStatus.Upcoming,
-    value: MeetingStatus.Upcoming,
-    children: (
-      <div className="flex items-center gap-x-2 capitalize">
-        <ClockArrowUp />
-        {MeetingStatus.Upcoming}
-      </div>
-    ),
-  },
-  {
-    id: MeetingStatus.Completed,
-    value: MeetingStatus.Completed,
-    children: (
-      <div className="flex items-center gap-x-2 capitalize">
-        <CircleCheckIcon />
-        {MeetingStatus.Completed}
-      </div>
-    ),
-  },
-  {
-    id: MeetingStatus.Active,
-    value: MeetingStatus.Active,
-    children: (
-      <div className="flex items-center gap-x-2 capitalize">
-        <VideoIcon />
-        {MeetingStatus.Active}
-      </div>
-    ),
-  },
-  {
-    id: MeetingStatus.Processing,
-    value: MeetingStatus.Processing,
-    children: (
-      <div className="flex items-center gap-x-2 capitalize">
-        <LoaderIcon />
-        {MeetingStatus.Processing}
-      </div>
-    ),
-  },
-  {
-    id: MeetingStatus.Cancelled,
-    value: MeetingStatus.Cancelled,
-    children: (
-      <div className="flex items-center gap-x-2 capitalize">
-        <CircleXIcon />
-        {MeetingStatus.Cancelled}
-      </div>
-    ),
-  },
-];
+import { DEFAULT_PAGE } from "@/constants";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const StatusFilter = () => {
   const [filters, setFilters] = useMeetingsFilter();
 
+  const handleValueChange = (value: string) => {
+    setFilters({
+      status: value === "all" ? null : (value as MeetingStatus),
+      page: DEFAULT_PAGE,
+    });
+  };
+
   return (
-    <CommandSelect
-      placeholder="Status"
-      className="h-9"
-      options={options}
-      onSelect={(value) => setFilters({ status: value as MeetingStatus })}
-      value={filters.status ?? ""}
-    />
+    <Select value={filters.status ?? "all"} onValueChange={handleValueChange}>
+      <SelectTrigger
+        className="h-9 w-auto min-w-[140px] text-xs sm:text-sm"
+        aria-label="Filter by status"
+      >
+        <SelectValue placeholder="All statuses" />
+      </SelectTrigger>
+      <SelectContent position="popper" align="start">
+        <SelectGroup>
+          <SelectItem value="all">
+            <SlidersHorizontalIcon className="text-muted-foreground size-3.5" />
+            <span>All statuses</span>
+          </SelectItem>
+          <SelectItem value={MeetingStatus.Upcoming}>
+            <ClockArrowUpIcon className="size-3.5 text-sky-600 dark:text-sky-400" />
+            <span>Upcoming</span>
+          </SelectItem>
+          <SelectItem value={MeetingStatus.Active}>
+            <VideoIcon className="text-brand size-3.5" />
+            <span>Active</span>
+          </SelectItem>
+          <SelectItem value={MeetingStatus.Processing}>
+            <LoaderIcon className="size-3.5 text-amber-600 dark:text-amber-400" />
+            <span>Processing</span>
+          </SelectItem>
+          <SelectItem value={MeetingStatus.Completed}>
+            <CircleCheckIcon className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span>Completed</span>
+          </SelectItem>
+          <SelectItem value={MeetingStatus.Cancelled}>
+            <CircleXIcon className="size-3.5 text-rose-600 dark:text-rose-400" />
+            <span>Cancelled</span>
+          </SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 };

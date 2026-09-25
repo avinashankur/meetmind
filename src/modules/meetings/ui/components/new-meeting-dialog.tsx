@@ -1,4 +1,10 @@
-import { ResponsiveDialog } from "@/components/responsive-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { MeetingForm } from "./meeting-form";
 import { useRouter } from "next/navigation";
 
@@ -11,19 +17,25 @@ export const NewMeetingDialog = ({ open, onOpenChange }: Props) => {
   const router = useRouter();
 
   return (
-    <ResponsiveDialog
-      title="New Meeting"
-      description="Create a new meeting"
-      open={open}
-      onOpenChange={onOpenChange}
-    >
-      <MeetingForm
-        onSuccess={(id) => {
-          onOpenChange(false);
-          router.push(`/meetings/${id}`);
-        }}
-        onCancel={() => onOpenChange(false)}
-      />
-    </ResponsiveDialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>New meeting</DialogTitle>
+          <DialogDescription>
+            Configure session title and assign an agent for real-time
+            participation.
+          </DialogDescription>
+        </DialogHeader>
+        <MeetingForm
+          onSuccess={(id) => {
+            onOpenChange(false);
+            if (id) {
+              router.push(`/meetings/${id}`);
+            }
+          }}
+          onCancel={() => onOpenChange(false)}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };

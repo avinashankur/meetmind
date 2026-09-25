@@ -1,6 +1,5 @@
 import { useTRPC } from "@/trpc/client";
 import { MeetingGetOne } from "../../types";
-// import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { meetingsInsertSchema } from "../../schema";
@@ -16,7 +15,14 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import { CommandSelect } from "@/components/command-select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import GeneratedAvatar from "@/components/generated-avatar";
 import { NewAgentDialog } from "@/modules/agents/ui/components/new-agent-dialog";
 
@@ -32,29 +38,21 @@ export const MeetingForm = ({
   initialValues,
 }: MeetingFormProps) => {
   const trpc = useTRPC();
-  //   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const [agentSearch, setAgentSearch] = useState("");
   const [openNewAgentDialog, setOpenNewAgentDialog] = useState<boolean>(false);
 
-  const agents = useQuery(
-    trpc.agents.getMany.queryOptions({ pageSize: 100, search: agentSearch }),
-  );
+  const agents = useQuery(trpc.agents.getMany.queryOptions({ pageSize: 100 }));
 
   const createMeeting = useMutation(
     trpc.meetings.create.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
-
-        // TODO: Invalidate free tier usage
         onSuccess?.(data.id);
       },
 
       onError: (error) => {
         toast.error(error.message);
-
-        // TODO: check if error code is FORBIDDEN, redirect to  /upgrade
       },
     }),
   );
@@ -75,8 +73,6 @@ export const MeetingForm = ({
 
       onError: (error) => {
         toast.error(error.message);
-
-        // TODO: check if error code is FORBIDDEN, redirect to  /upgrade
       },
     }),
   );
@@ -93,7 +89,6 @@ export const MeetingForm = ({
   const isPending = createMeeting.isPending || updateMeeting.isPending;
 
   const onSubmit = (values: z.infer<typeof meetingsInsertSchema>) => {
-    console.log(values);
     if (isEdit) {
       updateMeeting.mutate({ ...values, id: initialValues.id });
     } else {
@@ -109,70 +104,77 @@ export const MeetingForm = ({
       />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* This form input is using internal controller */}
           <FormInput
             name="name"
             label="Meeting name"
-            placeholder="Meeting Name"
+            placeholder="Meeting name"
           />
-          {/* This on the other hand will require an external form controller */}
           <Controller
             control={form.control}
             name="agentId"
             render={({ field, fieldState: { error } }) => (
               <Field>
                 <FieldLabel>Agent</FieldLabel>
-                <CommandSelect
-                  className="py-6"
-                  placeholder="Select an agent"
-                  onSearch={setAgentSearch}
-                  // 1. Connect Value
-                  value={field.value}
-                  // 2. Connect Change Handler
-                  // Note: CommandSelect usually returns a value, field.onChange expects that value
-                  onSelect={(val) => {
-                    field.onChange(val);
-                  }}
-                  options={(agents.data?.items ?? []).map((agent) => ({
-                    id: agent.id,
-                    value: agent.id,
-                    children: (
-                      <div className="flex items-center gap-x-2">
-                        <GeneratedAvatar
-                          seed={agent.name}
-                          variant="botttsNeutral"
-                        />
-                        <span>{agent.name}</span>
-                      </div>
-                    ),
-                  }))}
-                />
+                <Select
+                  value={field.value || undefined}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="h-10 w-full">
+                    <SelectValue placeholder="Select an agent" />
+                  </SelectTrigger>
+                  <SelectContent position="popper" className="max-h-60">
+                    <SelectGroup>
+                      {(agents.data?.items ?? []).map((agent) => (
+                        <SelectItem key={agent.id} value={agent.id}>
+                          <div className="flex items-center gap-2">
+                            <GeneratedAvatar
+                              seed={agent.name}
+                              variant="botttsNeutral"
+                              className="size-4 shrink-0 rounded-full"
+                            />
+                            <span className="truncate">{agent.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 {error && <FieldError>{error.message}</FieldError>}
                 <FieldDescription>
-                  Didn&apos;t found what you are looking for?{" "}
+                  Didn&apos;t find what you are looking for?{" "}
                   <button
                     type="button"
                     onClick={() => setOpenNewAgentDialog(true)}
                     className="text-primary font-medium underline hover:opacity-80"
                   >
-                    Create new agent.
+                    Create new agent
                   </button>
                 </FieldDescription>
               </Field>
             )}
           />
-          <div className="mt-10 flex items-center justify-end gap-2">
+          <div className="mt-8 flex items-center justify-end gap-2">
             {onCancel && (
               <Button
                 variant="ghost"
                 disabled={isPending}
                 type="button"
                 onClick={onCancel}
+                className="h-9 rounded-md px-4 text-sm font-medium"
               >
                 Cancel
               </Button>
             )}
-            <Button disabled={isPending}>{isEdit ? "Update" : "Create"}</Button>
+            <Button
+              disabled={isPending}
+              className="bg-primary text-primary-foreground h-9 rounded-md px-4 text-sm font-medium hover:opacity-90"
+            >
+              {isPending
+                ? "Processing..."
+                : isEdit
+                  ? "Update meeting"
+                  : "Create meeting"}
+            </Button>
           </div>
         </form>
       </FormProvider>
