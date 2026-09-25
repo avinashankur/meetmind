@@ -10,9 +10,9 @@ export default function Layout({ children }: Props) {
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <main className="bg-muted flex h-screen w-screen flex-col">
+      <main className="bg-background flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
         <DashboardNavbar />
-        {children}
+        <div className="flex-1">{children}</div>
       </main>
     </SidebarProvider>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import GeneratedAvatar from "@/components/generated-avatar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -46,58 +48,66 @@ export default function DashboardUserButton() {
 
   if (!data || !data.user) return null;
 
+  const userAvatar = data.user.image ? (
+    <Avatar className="ring-border size-8 rounded-full ring-1">
+      <AvatarImage src={data.user.image} />
+    </Avatar>
+  ) : (
+    <GeneratedAvatar
+      seed={data.user.name}
+      variant="avataaarsNeutral"
+      className="ring-border size-8 rounded-full ring-1"
+    />
+  );
+
+  const userInfo = (
+    <div className="flex min-w-0 flex-1 flex-col text-left">
+      <span className="text-foreground truncate text-sm font-medium">
+        {data.user.name}
+      </span>
+      <span className="text-muted-foreground truncate font-mono text-[11px]">
+        {data.user.email}
+      </span>
+    </div>
+  );
+
   if (isMobile) {
     return (
       <Drawer>
-        <DrawerTrigger className="flex cursor-pointer items-center justify-between rounded-lg border bg-neutral-100 p-2">
-          <div className="flex items-center gap-4">
-            {data.user.image ? (
-              <Avatar>
-                <AvatarImage src={data.user.image} />
-              </Avatar>
-            ) : (
-              <GeneratedAvatar
-                seed={data.user.name}
-                variant="avataaarsNeutral"
-              />
-            )}
-            <div className="flex flex-col text-left text-sm">
-              <p className="font-medium">{data.user.name}</p>
-              <p className="text-muted-foreground">{data.user.email}</p>
-            </div>
+        <DrawerTrigger className="border-border bg-card/70 hover:bg-card text-foreground flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border p-2 shadow-2xs transition-colors">
+          <div className="flex min-w-0 flex-1 items-center gap-2.5">
+            {userAvatar}
+            {userInfo}
           </div>
-          <ChevronDownIcon className="size-4" />
+          <ChevronDownIcon className="text-muted-foreground size-4 shrink-0" />
         </DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader className="flex items-center gap-2">
-            {data.user.image ? (
-              <Avatar>
-                <AvatarImage src={data.user.image} />
-              </Avatar>
-            ) : (
-              <GeneratedAvatar
-                seed={data.user.name}
-                variant="avataaarsNeutral"
-              />
-            )}
+          <DrawerHeader className="flex items-center gap-3">
+            {userAvatar}
             <div>
-              <DrawerTitle>{data.user.name}</DrawerTitle>
-              <DrawerDescription>{data.user.email}</DrawerDescription>
+              <DrawerTitle className="text-left">{data.user.name}</DrawerTitle>
+              <DrawerDescription className="text-left font-mono text-xs">
+                {data.user.email}
+              </DrawerDescription>
             </div>
           </DrawerHeader>
 
-          <DrawerFooter>
-            <Button className="cursor-pointer" variant="outline">
+          <DrawerFooter className="gap-2">
+            <Button
+              className="cursor-pointer justify-start gap-2 rounded-xl"
+              variant="outline"
+              onClick={() => router.push("/upgrade")}
+            >
               <CreditCardIcon className="size-4" />
-              Billing
+              <span>Billing & Plan</span>
             </Button>
             <Button
-              className="cursor-pointer"
+              className="cursor-pointer justify-start gap-2 rounded-xl"
               onClick={handleSignOut}
               variant="destructive"
             >
               <LogOutIcon className="size-4" />
-              Log Out
+              <span>Log Out</span>
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -107,39 +117,47 @@ export default function DashboardUserButton() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex cursor-pointer items-center justify-between rounded-lg border bg-neutral-100 p-2">
-        <div className="flex items-center gap-4">
-          {data.user.image ? (
-            <Avatar>
-              <AvatarImage src={data.user.image} />
-            </Avatar>
-          ) : (
-            <GeneratedAvatar seed={data.user.name} variant="avataaarsNeutral" />
-          )}
-          <div className="flex flex-col text-left text-sm">
-            <p className="font-medium">{data.user.name}</p>
-            <p className="text-muted-foreground">{data.user.email}</p>
-          </div>
+      <DropdownMenuTrigger className="border-border bg-card/70 hover:bg-card text-foreground flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border p-2 shadow-2xs outline-hidden transition-colors">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
+          {userAvatar}
+          {userInfo}
         </div>
-        <ChevronDownIcon className="size-4" />
+        <ChevronDownIcon className="text-muted-foreground size-4 shrink-0" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60">
-        <DropdownMenuLabel>
-          <div className="flex flex-col">
-            <span className="truncate font-medium">{data.user.name}</span>
-            <span className="text-muted-foreground">{data.user.email}</span>
+      <DropdownMenuContent
+        className="border-border bg-popover w-56 rounded-xl shadow-md"
+        align="end"
+        side="top"
+      >
+        <DropdownMenuLabel className="py-2 font-normal">
+          <div className="flex flex-col space-y-0.5">
+            <span className="text-foreground truncate text-sm font-medium">
+              {data.user.name}
+            </span>
+            <span className="text-muted-foreground truncate font-mono text-[11px]">
+              {data.user.email}
+            </span>
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-border" />
 
-        <DropdownMenuItem className="cursor-pointer">
-          <CreditCardIcon className="size-4" />
-          Billing
+        <DropdownMenuItem
+          className="cursor-pointer gap-2 py-2 text-xs"
+          onClick={() => router.push("/upgrade")}
+        >
+          <CreditCardIcon className="text-muted-foreground size-4" />
+          <span>Billing & Plan</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer" onClick={handleSignOut}>
+
+        <DropdownMenuSeparator className="bg-border" />
+
+        <DropdownMenuItem
+          className="cursor-pointer gap-2 py-2 text-xs text-rose-600 focus:text-rose-600 dark:text-rose-400 dark:focus:text-rose-400"
+          onClick={handleSignOut}
+        >
           <LogOutIcon className="size-4" />
-          Log Out
+          <span>Log Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
