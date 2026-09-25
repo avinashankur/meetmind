@@ -73,7 +73,7 @@ export const FooterLanding = () => {
                 <li>
                   <Link
                     href="/sign-up"
-                    className="text-accent font-semibold hover:underline"
+                    className="text-brand font-semibold hover:underline"
                   >
                     Get Started
                   </Link>

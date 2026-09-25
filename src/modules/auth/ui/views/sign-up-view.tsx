@@ -100,7 +100,7 @@ export const SignUpView = () => {
 
           <h1 className="text-primary mt-2 text-2xl leading-tight font-normal tracking-tight sm:text-3xl lg:text-4xl">
             From conversation to{" "}
-            <span className="text-accent">structured knowledge</span>.
+            <span className="text-brand">structured knowledge</span>.
           </h1>
 
           <p className="text-secondary mt-2 text-xs leading-relaxed font-normal sm:text-sm">
@@ -118,7 +118,7 @@ export const SignUpView = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="text-secondary flex items-center gap-2">
-                <Zap className="text-accent size-3" />
+                <Zap className="text-brand size-3" />
                 <span>Cadence Latency</span>
               </div>
               <span className="text-primary font-semibold">184ms Duplex</span>
@@ -126,7 +126,7 @@ export const SignUpView = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-secondary flex items-center gap-2">
-                <BrainCircuit className="text-accent size-3" />
+                <BrainCircuit className="text-brand size-3" />
                 <span>Synthesis Model</span>
               </div>
               <span className="text-primary font-semibold">
@@ -136,7 +136,7 @@ export const SignUpView = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-secondary flex items-center gap-2">
-                <ShieldCheck className="text-accent size-3" />
+                <ShieldCheck className="text-brand size-3" />
                 <span>Data Retention</span>
               </div>
               <span className="font-semibold text-emerald-700 dark:text-emerald-400">
@@ -259,7 +259,7 @@ export const SignUpView = () => {
             <span>Already have an account?</span>
             <Link
               href="/sign-in"
-              className="text-accent font-medium transition-colors hover:underline"
+              className="text-brand font-medium transition-colors hover:underline"
             >
               Sign In
             </Link>

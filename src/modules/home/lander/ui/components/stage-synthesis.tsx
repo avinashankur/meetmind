@@ -22,14 +22,14 @@ export const StageSynthesis: React.FC = () => {
         {/* Masthead */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-              <span className="bg-accent size-1.5 rounded-full" />
+            <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+              <span className="bg-brand size-1.5 rounded-full" />
               <span>Automated Meeting Synthesis</span>
             </div>
             <div className="mt-2 flex flex-col gap-3 sm:gap-2 md:flex-row">
               <h2 className="text-primary text-3xl leading-tight font-normal tracking-tight sm:text-5xl">
                 From conversation to{" "}
-                <span className="text-accent">structured knowledge</span>.
+                <span className="text-brand">structured knowledge</span>.
               </h2>
               <p className="text-secondary max-w-md text-xs font-normal sm:text-sm">
                 Inngest background workflows fetch transcripts, enrich speaker
@@ -55,8 +55,8 @@ export const StageSynthesis: React.FC = () => {
 
             <div className="flex items-center gap-4 text-xs">
               <div className="flex items-center gap-1.5">
-                <span className="bg-accent size-1.5 rounded-full" />
-                <span className="text-accent">SYNTHESIZED VIA INNGEST</span>
+                <span className="bg-brand size-1.5 rounded-full" />
+                <span className="text-brand">SYNTHESIZED VIA INNGEST</span>
               </div>
               <span className="text-zinc-400 dark:text-zinc-600">|</span>
               <span className="text-emerald-700 dark:text-emerald-400">
@@ -122,7 +122,7 @@ export const StageSynthesis: React.FC = () => {
                   <div
                     className={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
                       checkedTasks["task-1"]
-                        ? "border-accent bg-accent text-accent-foreground"
+                        ? "border-brand bg-brand text-brand-foreground"
                         : "border-zinc-400 bg-white/50 dark:bg-zinc-800"
                     }`}
                   >
@@ -154,7 +154,7 @@ export const StageSynthesis: React.FC = () => {
                   <div
                     className={`mt-0.5 flex size-4 shrink-0 items-center justify-center rounded border transition-colors ${
                       checkedTasks["task-2"]
-                        ? "border-accent bg-accent text-accent-foreground"
+                        ? "border-brand bg-brand text-brand-foreground"
                         : "border-zinc-400 bg-white/50 dark:bg-zinc-800"
                     }`}
                   >
@@ -171,7 +171,7 @@ export const StageSynthesis: React.FC = () => {
                       <span>•</span>
                       <span>31:14</span>
                       <span>•</span>
-                      <span className="text-accent">Action Item</span>
+                      <span className="text-brand">Action Item</span>
                     </div>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export const StageSynthesis: React.FC = () => {
 
               <div className="space-y-3 font-mono text-xs">
                 <div className="flex items-start gap-2.5">
-                  <FileText className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <FileText className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="text-primary font-medium">
                       1. Stream Webhook
@@ -209,7 +209,7 @@ export const StageSynthesis: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <Users className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <Users className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="text-primary font-medium">
                       2. Speaker Attribution
@@ -222,7 +222,7 @@ export const StageSynthesis: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <Cpu className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <Cpu className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="text-primary font-medium">
                       3. GPT-4o Summarization
@@ -246,7 +246,7 @@ export const StageSynthesis: React.FC = () => {
               <span>•</span>
               <span>AI AGENTS: GPT-4o</span>
             </div>
-            <div className="text-accent flex items-center gap-1.5">
+            <div className="text-brand flex items-center gap-1.5">
               <span>STATUS: AUTOMATICALLY COMPLETED</span>
               <ArrowRight className="size-3" />
             </div>

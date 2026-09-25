@@ -63,14 +63,14 @@ export const StageMemory: React.FC = () => {
         {/* Masthead */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-              <span className="bg-accent size-1.5 rounded-full" />
+            <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+              <span className="bg-brand size-1.5 rounded-full" />
               <span>Meeting Memory & Recall</span>
             </div>
             <div className="mt-2 flex flex-col gap-3 sm:gap-2 md:flex-row">
               <h2 className="text-primary text-3xl leading-tight font-normal tracking-tight sm:text-5xl">
                 Total recall with{" "}
-                <span className="text-accent">Ask AI & Transcripts</span>.
+                <span className="text-brand">Ask AI & Transcripts</span>.
               </h2>
               <p className="text-secondary max-w-md text-xs font-normal sm:text-sm">
                 Ask your AI agent follow-up questions in dedicated Stream Chat
@@ -86,11 +86,11 @@ export const StageMemory: React.FC = () => {
           {/* Seamless Interactive Query Strip */}
           <div className="border-border border-b pb-6">
             <div className="flex items-center gap-3">
-              <Search className="text-accent size-4 shrink-0" />
+              <Search className="text-brand size-4 shrink-0" />
               <div className="text-primary flex-1 font-mono text-base sm:text-lg">
-                <span className="text-accent mr-2">&gt;</span>
+                <span className="text-brand mr-2">&gt;</span>
                 <span>{activeCase.query}</span>
-                <span className="bg-accent ml-1 inline-block h-4 w-1.5 align-middle" />
+                <span className="bg-brand ml-1 inline-block h-4 w-1.5 align-middle" />
               </div>
             </div>
 
@@ -134,7 +134,7 @@ export const StageMemory: React.FC = () => {
                 </span>
               </div>
 
-              <blockquote className="border-accent text-primary border-l-2 pl-6 text-lg leading-relaxed font-normal sm:text-2xl">
+              <blockquote className="border-brand text-primary border-l-2 pl-6 text-lg leading-relaxed font-normal sm:text-2xl">
                 &ldquo;{activeCase.answer}&rdquo;
               </blockquote>
             </div>
@@ -147,7 +147,7 @@ export const StageMemory: React.FC = () => {
 
               <div className="space-y-4 text-xs">
                 <div className="flex items-start gap-2.5">
-                  <FileText className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <FileText className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="block text-xs text-zinc-400 uppercase">
                       Meeting
@@ -159,7 +159,7 @@ export const StageMemory: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <User className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <User className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="block text-xs text-zinc-400 uppercase">
                       Speaker
@@ -171,7 +171,7 @@ export const StageMemory: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <Clock className="text-accent mt-0.5 size-3.5 shrink-0" />
+                  <Clock className="text-brand mt-0.5 size-3.5 shrink-0" />
                   <div>
                     <span className="block text-xs text-zinc-400 uppercase">
                       Timecode

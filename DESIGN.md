@@ -23,19 +23,21 @@ Colors are defined in [`src/app/globals.css`](file:///e:/dev/meetmind/src/app/gl
 
 ### Theme Palette & Semantic Tokens
 
-| CSS Variable           | Light Theme                | Dark Theme                  | Tailwind Utility                            | Semantic Purpose                                       |
-| :--------------------- | :------------------------- | :-------------------------- | :------------------------------------------ | :----------------------------------------------------- |
-| `--background`         | `#ececeb`                  | `#111111`                   | `bg-background`                             | Primary page & section background canvas               |
-| `--foreground`         | `#202020`                  | `#f4f4f4`                   | `text-foreground`                           | Base body text and default contrast                    |
-| `--primary`            | `#202020`                  | `#ffffff`                   | `text-primary`, `bg-primary`                | Primary headlines, strong emphasis, solid buttons      |
-| `--primary-foreground` | `#ffffff`                  | `#111111`                   | `text-primary-foreground`                   | Inverted text on primary backgrounds                   |
-| `--secondary`          | `#4a4a4a`                  | `#a1a1aa`                   | `text-secondary`                            | Subheadings, editorial descriptions, secondary actions |
-| `--accent`             | `#ad314d`                  | `#ad314d`                   | `text-accent`, `bg-accent`, `border-accent` | Brand crimson accent, LED matrix, active indicators    |
-| `--accent-foreground`  | `#ffffff`                  | `#ffffff`                   | `text-accent-foreground`                    | Text on accent elements                                |
-| `--muted`              | `#f4f4f5`                  | `#27272a`                   | `bg-muted`                                  | Skeleton loaders, subtle chip fills                    |
-| `--muted-foreground`   | `#4a4a4a`                  | `#a1a1aa`                   | `text-muted-foreground`                     | Microcopy, metadata labels                             |
-| `--border`             | `rgba(34, 34, 34, 0.1)`    | `rgba(255, 255, 255, 0.1)`  | `border-border`                             | Hairline dividers and surface borders                  |
-| `--card`               | `rgba(255, 255, 255, 0.7)` | `rgba(255, 255, 255, 0.03)` | `bg-card`                                   | Surface plates with backdrop blur (`backdrop-blur-sm`) |
+| CSS Variable           | Light Theme                | Dark Theme                  | Tailwind Utility                         | Semantic Purpose                                       |
+| :--------------------- | :------------------------- | :-------------------------- | :--------------------------------------- | :----------------------------------------------------- |
+| `--background`         | `#ececeb`                  | `#111111`                   | `bg-background`                          | Primary page & section background canvas               |
+| `--foreground`         | `#202020`                  | `#f4f4f4`                   | `text-foreground`                        | Base body text and default contrast                    |
+| `--primary`            | `#202020`                  | `#ffffff`                   | `text-primary`, `bg-primary`             | Primary headlines, strong emphasis, solid buttons      |
+| `--primary-foreground` | `#ffffff`                  | `#111111`                   | `text-primary-foreground`                | Inverted text on primary backgrounds                   |
+| `--secondary`          | `#4a4a4a`                  | `#a1a1aa`                   | `text-secondary`                         | Subheadings, editorial descriptions, secondary actions |
+| `--brand`              | `#ad314d`                  | `#ad314d`                   | `text-brand`, `bg-brand`, `border-brand` | Brand crimson identity, LED matrix, active indicators  |
+| `--brand-foreground`   | `#ffffff`                  | `#ffffff`                   | `text-brand-foreground`                  | Text on brand elements                                 |
+| `--accent`             | `#dededc`                  | `#222222`                   | `bg-accent`, `text-accent-foreground`    | Soft neutral hover/focus highlights on UI items        |
+| `--accent-foreground`  | `#202020`                  | `#f4f4f4`                   | `text-accent-foreground`                 | Text on hover/focus highlight surfaces                 |
+| `--muted`              | `#e4e4e3`                  | `#1c1c1c`                   | `bg-muted`                               | Skeleton loaders, subtle chip fills                    |
+| `--muted-foreground`   | `#4a4a4a`                  | `#a1a1aa`                   | `text-muted-foreground`                  | Microcopy, metadata labels                             |
+| `--border`             | `rgba(34, 34, 34, 0.1)`    | `rgba(255, 255, 255, 0.1)`  | `border-border`                          | Hairline dividers and surface borders                  |
+| `--card`               | `rgba(255, 255, 255, 0.7)` | `rgba(255, 255, 255, 0.03)` | `bg-card`                                | Surface plates with backdrop blur (`backdrop-blur-sm`) |
 
 ### Dark Mode Atmosphere
 
@@ -184,3 +186,40 @@ The landing page ([`home-view.tsx`](file:///e:/dev/meetmind/src/modules/home/lan
 | **Tablet (`640px - 1023px`)** | `640px - 1023px`  | `sm:px-16` padding (64px). Mastheads switch to row layout (`sm:flex-row`). Deliverables switch to 3 columns. Portrait mode organizes cards into a 2+1 grid.                                          |
 | **Desktop (`≥ 1024px`)**      | `1024px - 1440px` | `max-w-6xl` centered (`1024px` content). All 3 hero cards in 1 row (`flex justify-between`). Security deck displays side-by-side 5-col / 7-col layout.                                               |
 | **Ultrawide (`> 1440px`)**    | `> 1440px`        | Content stays rigidly constrained to `max-w-6xl` centered canvas (`margin-inline: auto`). Dark mode radial ambient glow broadens smoothly without clipping.                                          |
+
+---
+
+## 8. Dashboard & Application UI Principles
+
+To ensure an enterprise-grade user experience and maintain visual restraint across dashboard modules, all interface implementations must adhere to the following rules:
+
+### 1. Single Source of Truth for Page Headings (No Duplicate Titles)
+
+- When the persistent top navigation bar / breadcrumb already displays the current section title (e.g. `Meetings`, `Agents`), the page view **MUST NOT** render a duplicate top heading or masthead.
+- Redundant headings waste vertical real estate and introduce clutter. The page body should immediately transition into the action toolbar (search, filters, primary actions) and core data tables.
+
+### 2. Form Control & Overlay Selection (Avoid Dialog Overkill)
+
+- **Filters & Selectors**: Dropdown filters (e.g., status, agent, category) **MUST** use native inline shadcn `Select` (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectGroup`, `SelectItem`) with `position="popper"`.
+- **No Modal Dialogs for Selection**: Never open a full modal dialog or drawer for simple single-choice selection. Modal popups for filters interrupt user flow and introduce unnecessary interaction friction.
+- **No Nested Modals**: Modals containing form inputs (e.g. `NewMeetingDialog`) must use inline `Select` components for related entity choices, never launching a secondary modal or command drawer inside the dialog.
+- **Dialog Scoping**: Native shadcn `Dialog` is reserved strictly for complex creation workflows, dedicated multi-field forms, destructive confirmations (`AlertDialog`), and the global command palette (`Cmd+K`).
+
+### 3. Elimination of Superfluous Dot Elements (Anti-Dot-Overuse Rule)
+
+- **No Decorative Dots**: Do not scatter decorative dots (`size-1.5 rounded-full`, `size-2 rounded-full`, pinging status dots, or bullet text `•`) across status badges, table headers, list cards, or metadata bars.
+- **Icon-Driven Status**: Status indicators must rely on clean, recognizable semantic icons (e.g. `ClockArrowUpIcon`, `VideoIcon`, `CircleCheckIcon`, `LoaderIcon`) combined with subtle semantic color classes (`border-emerald-500/25 bg-emerald-500/10 text-emerald-700`). Redundant dot indicators next to icons are strictly forbidden.
+- **Pinging Animations**: Pulsing/pinging indicators (`animate-ping`) are reserved exclusively for live hardware recording feeds or active WebRTC streams. For loading states, use standard accessible spinners (`Loader2Icon animate-spin`) or shadcn `Skeleton`.
+
+### 4. Typography Restraint & Capitalization Rules
+
+- **No Universal Uppercase**: Do not indiscriminately apply `uppercase` and wide tracking (`tracking-wider`, `tracking-widest`) to standard UI components, buttons, select options, badges, or headers.
+- **Sentence and Title Case**: All interface actions, navigation links, button labels, and dropdown items must use standard Sentence Case or Title Case (e.g., `New meeting`, `All statuses`, `Processing`, `Completed`, `Reset filters`).
+- **Monospace Telemetry Scope**: Monospace fonts (`font-mono`) and uppercase treatments are strictly reserved for raw telemetry data, system timestamps, cryptographic protocol hashes, or unit abbreviations (e.g., `184 ms`, `48kHz OPUS`).
+
+### 5. Official shadcn/ui Composition Patterns
+
+- **Structural Groups**: Items must always be rendered within their parent group container (e.g. `SelectItem` inside `SelectGroup`, `DropdownMenuItem` inside `DropdownMenuGroup`).
+- **Accessible Overlays**: Overlay components (`Dialog`, `Sheet`, `Drawer`) must always include accessible `DialogHeader`, `DialogTitle`, and `DialogDescription` directly inside `DialogContent`. Use `className="sr-only"` when visually hidden.
+- **Semantic Theme Tokens**: All styles must use project semantic color tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-card`) without hardcoded arbitrary hex values.
+- **Decoupling Brand Identity from UI Accent**: The brand crimson color is encapsulated strictly within `--brand` (`text-brand`, `bg-brand`, `border-brand`). The shadcn `--accent` token is reserved exclusively for soft neutral hover/focus highlight states on dropdown items (`SelectItem`), menus, and ghost buttons (`bg-accent`, `text-accent-foreground`). Never assign bold brand colors to `--accent` to prevent harsh hover overlays on standard controls.

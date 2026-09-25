@@ -77,8 +77,8 @@ export const SignInView = () => {
       </Link>
 
       <div className="mb-5">
-        <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-          <span className="bg-accent size-1.5 rounded-full" />
+        <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+          <span className="bg-brand size-1.5 rounded-full" />
           <span>Workspace Access</span>
         </div>
         <h2 className="text-primary mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
@@ -162,7 +162,7 @@ export const SignInView = () => {
         <span>Don&apos;t have an account?</span>
         <Link
           href="/sign-up"
-          className="text-accent font-medium transition-colors hover:underline"
+          className="text-brand font-medium transition-colors hover:underline"
         >
           Sign Up
         </Link>

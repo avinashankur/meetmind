@@ -58,7 +58,7 @@ export const PerformanceStage: React.FC = () => {
             <span className="headline__line">
               Built for{" "}
               <span
-                className="dot-word text-accent"
+                className="dot-word text-brand"
                 data-dots="Intelligent"
                 aria-label="Intelligent"
               >

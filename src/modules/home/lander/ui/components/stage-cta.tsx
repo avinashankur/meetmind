@@ -14,8 +14,8 @@ export const StageCta: React.FC = () => {
     >
       <div className="mx-auto w-full max-w-6xl px-6 text-center sm:px-16">
         {/* Pill */}
-        <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-          <span className="bg-accent size-1.5 rounded-full" />
+        <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+          <span className="bg-brand size-1.5 rounded-full" />
           <span>Intelligent Performance in Production</span>
         </div>
 
@@ -25,7 +25,7 @@ export const StageCta: React.FC = () => {
           <span className="inline-flex flex-wrap items-center justify-center gap-3">
             <span className="font-normal">more</span>
             <span
-              className="text-accent inline-block align-middle"
+              className="text-brand inline-block align-middle"
               style={{ width: "4.85em", height: "0.766em" }}
             >
               <LedDots value="Intelligent" isWord={true} />

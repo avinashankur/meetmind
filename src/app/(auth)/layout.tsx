@@ -6,7 +6,7 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="bg-background text-foreground selection:bg-accent/20 selection:text-accent relative flex min-h-screen flex-col justify-center overflow-x-hidden">
+    <div className="bg-background text-foreground selection:bg-brand/20 selection:text-brand relative flex min-h-screen flex-col justify-center overflow-x-hidden">
       {/* Ambient Atmospheric Background for Dark Mode */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 dark:opacity-100"

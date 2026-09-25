@@ -22,13 +22,13 @@ export const StageVoiceEngine: React.FC = () => {
         {/* Masthead */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-              <span className="bg-accent size-1.5 rounded-full" />
+            <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+              <span className="bg-brand size-1.5 rounded-full" />
               <span>Realtime Acoustic Pipeline</span>
             </div>
             <div className="mt-2 flex flex-col gap-3 sm:gap-2 md:flex-row">
               <h2 className="text-primary text-3xl leading-tight font-normal tracking-tight sm:text-5xl">
-                Dialogue at <span className="text-accent">human cadence</span>.
+                Dialogue at <span className="text-brand">human cadence</span>.
               </h2>
               <p className="text-secondary max-w-md text-xs font-normal sm:text-sm">
                 Stream Video connects natively to OpenAI Realtime API. Your
@@ -44,7 +44,7 @@ export const StageVoiceEngine: React.FC = () => {
           {/* Telemetry Status Strip */}
           <div className="border-border text-secondary flex flex-wrap items-center justify-between gap-4 border-b pb-4 font-mono text-xs">
             <div className="flex items-center gap-3">
-              <span className="bg-accent flex size-1.5 rounded-full" />
+              <span className="bg-brand flex size-1.5 rounded-full" />
               <span className="text-primary font-medium tracking-wider uppercase">
                 WEBRTC OPUS DUPLEX
               </span>
@@ -73,15 +73,15 @@ export const StageVoiceEngine: React.FC = () => {
                 </span>
               </div>
 
-              <div className="border-accent/20 bg-accent/5 text-accent inline-flex items-center gap-2 rounded-full border px-3 py-1">
-                <span className="bg-accent size-1.5 rounded-full" />
+              <div className="border-brand/20 bg-brand/5 text-brand inline-flex items-center gap-2 rounded-full border px-3 py-1">
+                <span className="bg-brand size-1.5 rounded-full" />
                 <span className="font-medium tracking-wider uppercase">
                   184ms Turnaround Latency
                 </span>
               </div>
 
-              <div className="text-accent flex items-center gap-2">
-                <span className="bg-accent size-2 rounded-full" />
+              <div className="text-brand flex items-center gap-2">
+                <span className="bg-brand size-2 rounded-full" />
                 <span className="tracking-wider uppercase">
                   MeetMind AI Synthesis
                 </span>
@@ -98,11 +98,11 @@ export const StageVoiceEngine: React.FC = () => {
               </div>
 
               {/* Latency Divider Marker */}
-              <div className="border-accent/50 pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 flex-col items-center justify-between border-l border-dashed">
-                <span className="text-accent -translate-y-2 font-mono text-xs tracking-wider uppercase">
+              <div className="border-brand/50 pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 flex-col items-center justify-between border-l border-dashed">
+                <span className="text-brand -translate-y-2 font-mono text-xs tracking-wider uppercase">
                   Gap
                 </span>
-                <span className="text-accent translate-y-2 font-mono text-xs tracking-wider uppercase">
+                <span className="text-brand translate-y-2 font-mono text-xs tracking-wider uppercase">
                   184ms
                 </span>
               </div>
@@ -125,7 +125,7 @@ export const StageVoiceEngine: React.FC = () => {
                 <path
                   d={`M 520 60 L 540 60 Q 600 ${60 + Math.cos(tick * 0.38) * 45} 680 60 T 800 ${60 + Math.sin(tick * 0.45) * -42} T 920 ${60 + Math.cos(tick * 0.3) * 35} T 1000 60`}
                   fill="none"
-                  stroke="var(--accent)"
+                  stroke="var(--brand)"
                   strokeWidth="2.25"
                 />
               </svg>
@@ -135,7 +135,7 @@ export const StageVoiceEngine: React.FC = () => {
             <div className="mt-4 flex items-center justify-between font-mono text-xs text-zinc-400 dark:text-zinc-600">
               <span>00:00.00</span>
               <span>00:05.00</span>
-              <span className="text-accent">00:10.18</span>
+              <span className="text-brand">00:10.18</span>
               <span>00:15.00</span>
               <span>00:20.00</span>
             </div>
@@ -149,7 +149,7 @@ export const StageVoiceEngine: React.FC = () => {
                 01 // Roundtrip Latency
               </span>
               <div className="text-primary mt-3 flex items-baseline gap-2 text-2xl font-semibold sm:text-3xl">
-                <div className="text-accent w-16">
+                <div className="text-brand w-16">
                   <LedDots value="184" />
                 </div>
                 <span className="text-secondary font-mono text-xs font-normal">
@@ -168,7 +168,7 @@ export const StageVoiceEngine: React.FC = () => {
                 02 // In-Session Host
               </span>
               <div className="text-primary mt-3 flex items-baseline gap-2 text-2xl font-semibold sm:text-3xl">
-                <div className="text-accent w-10">
+                <div className="text-brand w-10">
                   <LedDots value="0" />
                 </div>
                 <span className="text-secondary font-mono text-xs font-normal">

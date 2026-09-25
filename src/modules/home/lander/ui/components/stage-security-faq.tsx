@@ -19,7 +19,7 @@ export const StageSecurityFaq: React.FC = () => {
       title: "Strict Zero-Model Retraining Policy",
       desc: "Proprietary meeting audio, code discussions, and transcripts are never utilized to train AI models.",
       status: "POLICY LOCKED",
-      statusColor: "text-accent",
+      statusColor: "text-brand",
     },
     {
       protocol: "SEC-03 // TENANCY",
@@ -81,13 +81,13 @@ export const StageSecurityFaq: React.FC = () => {
         {/* Masthead */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <div className="text-accent inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-              <Shield className="text-accent size-3" />
+            <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
+              <Shield className="text-brand size-3" />
               <span>Zero-Trust Architecture</span>
             </div>
             <div className="mt-2 flex flex-col gap-3 sm:gap-2 md:flex-row">
               <h2 className="text-primary text-3xl leading-tight font-normal tracking-tight sm:text-5xl">
-                Private <span className="text-accent">architecture</span> by
+                Private <span className="text-brand">architecture</span> by
                 default.
               </h2>
               <p className="text-secondary max-w-md text-xs font-normal sm:text-sm">
@@ -104,7 +104,7 @@ export const StageSecurityFaq: React.FC = () => {
             <span className="text-primary font-semibold tracking-wider uppercase">
               CRYPTOGRAPHIC DEFENSE LEDGER
             </span>
-            <span className="text-accent">ALL PROTOCOLS ACTIVE</span>
+            <span className="text-brand">ALL PROTOCOLS ACTIVE</span>
           </div>
 
           <div className="divide-border divide-y">
@@ -139,7 +139,7 @@ export const StageSecurityFaq: React.FC = () => {
         {/* Technical Disclosure / Interactive FAQ Deck */}
         <div id="faq" className="border-border mt-16 border-t pt-12">
           <div className="mb-8">
-            <span className="text-accent font-mono text-xs tracking-wider uppercase">
+            <span className="text-brand font-mono text-xs tracking-wider uppercase">
               SPECIFICATIONS & FAQ
             </span>
             <h3 className="text-primary mt-1 text-2xl font-normal tracking-tight sm:text-3xl">
@@ -165,7 +165,7 @@ export const StageSecurityFaq: React.FC = () => {
                   >
                     <div>
                       <span
-                        className={`block font-mono text-xs tracking-wider uppercase ${isActive ? "text-accent" : "text-zinc-400"}`}
+                        className={`block font-mono text-xs tracking-wider uppercase ${isActive ? "text-brand" : "text-zinc-400"}`}
                       >
                         {f.category}
                       </span>
@@ -185,7 +185,7 @@ export const StageSecurityFaq: React.FC = () => {
             <div className="border-border flex min-h-64 flex-col justify-between border-t pt-6 lg:col-span-7 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
               <div>
                 <div className="border-border text-secondary flex items-center justify-between border-b pb-3 font-mono text-xs">
-                  <span className="text-accent uppercase">
+                  <span className="text-brand uppercase">
                     {faqs[activeFaqIndex].category}
                   </span>
                   <span>STANDARD: {faqs[activeFaqIndex].spec}</span>
