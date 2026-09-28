@@ -9,7 +9,7 @@ import { FooterLanding } from "../components/footer";
 
 export const HomeView = () => {
   return (
-    <div className="bg-background selection:bg-brand/20 selection:text-brand min-h-screen">
+    <div className="selection:bg-brand/20 selection:text-brand min-h-screen bg-[var(--paper)]">
       <HeaderLanding />
       <PerformanceStage />
       <StageVoiceEngine />
