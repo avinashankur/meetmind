@@ -6,6 +6,7 @@ export const filterSearchParams = {
   page: parseAsInteger
     .withDefault(DEFAULT_PAGE)
     .withOptions({ clearOnDefault: true }),
+  view: parseAsString.withDefault("grid").withOptions({ clearOnDefault: true }),
 };
 
 export const loadSearchParam = createLoader(filterSearchParams);

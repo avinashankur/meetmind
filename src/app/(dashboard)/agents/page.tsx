@@ -18,6 +18,12 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
+export const metadata = {
+  title: "AI Agents - MeetMind",
+  description:
+    "Deploy, configure, and manage autonomous AI agents for your meetings.",
+};
+
 export default async function Page({ searchParams }: Props) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -32,20 +38,21 @@ export default async function Page({ searchParams }: Props) {
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
     trpc.agents.getMany.queryOptions({
-      ...filters,
+      page: filters.page,
+      search: filters.search,
     }),
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-0 w-full">
-        <AgentsListHeader />
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <Suspense fallback={<AgentsViewLoading />}>
-            <ErrorBoundary fallback={<AgentsViewError />}>
-              <AgentsView />
-            </ErrorBoundary>
-          </Suspense>
-        </HydrationBoundary>
+    <div className="mx-auto w-full max-w-6xl px-6 py-8 sm:px-16 sm:py-10">
+      <AgentsListHeader />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<AgentsViewLoading />}>
+          <ErrorBoundary fallback={<AgentsViewError />}>
+            <AgentsView />
+          </ErrorBoundary>
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
 }

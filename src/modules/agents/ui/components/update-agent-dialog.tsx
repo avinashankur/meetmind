@@ -15,8 +15,8 @@ export const UpdateAgentDialog = ({
 }: Props) => {
   return (
     <ResponsiveDialog
-      title="Edit Agent"
-      description="Edit the agent details"
+      title="Configure Agent"
+      description="Update instructions and settings for this autonomous meeting agent"
       open={open}
       onOpenChange={onOpenChange}
     >
