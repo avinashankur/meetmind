@@ -3,27 +3,25 @@
 import { useTRPC } from "@/trpc/client";
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { format } from "date-fns";
+import { toast } from "sonner";
 import {
-  Calendar,
-  CheckCircle2,
-  ClipboardList,
-  Fingerprint,
-  Hash,
-  Mail,
-  MoreVertical,
-  Play,
-  Settings,
-  ShieldCheck,
-  Trash2,
-  TrashIcon,
-  Video,
+  ArrowRightIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  Trash2Icon,
+  VideoIcon,
 } from "lucide-react";
 
-// --- SHADCN IMPORTS ---
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,10 +31,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,13 +46,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import GeneratedAvatar from "@/components/generated-avatar";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { UpdateAgentDialog } from "../components/update-agent-dialog";
 
 interface Props {
@@ -75,17 +66,48 @@ interface AgentData {
   meetingCount: number;
 }
 
+const statusStyleMap: Record<
+  string,
+  {
+    className: string;
+  }
+> = {
+  upcoming: {
+    className: "border-sky-500/25 bg-sky-500/10 text-sky-400",
+  },
+  processing: {
+    className: "border-amber-500/25 bg-amber-500/10 text-amber-400",
+  },
+  active: {
+    className: "border-brand/30 bg-brand/10 text-brand",
+  },
+  completed: {
+    className: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400",
+  },
+  cancelled: {
+    className: "border-rose-500/25 bg-rose-500/10 text-rose-400",
+  },
+};
+
 export const AgentIdView = ({ agentId }: Props) => {
   const router = useRouter();
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
   const [updateAgentDialogOpen, setUpdateAgentDialogOpen] =
     useState<boolean>(false);
-
-  const queryClient = useQueryClient();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 
   const { data } = useSuspenseQuery(
     trpc.agents.getOne.queryOptions({ id: agentId }),
   ) as { data: AgentData };
+
+  const { data: meetingsData } = useQuery(
+    trpc.meetings.getMany.queryOptions({
+      agentId,
+      pageSize: 5,
+    }),
+  );
 
   const removeAgent = useMutation(
     trpc.agents.remove.mutationOptions({
@@ -93,8 +115,7 @@ export const AgentIdView = ({ agentId }: Props) => {
         await queryClient.invalidateQueries(
           trpc.agents.getMany.queryOptions({}),
         );
-
-        // TODO: invalidate free tier usage
+        toast.success(`Agent "${data.name}" deleted`);
         router.push("/agents");
       },
       onError: (error) => {
@@ -103,13 +124,28 @@ export const AgentIdView = ({ agentId }: Props) => {
     }),
   );
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+  const handleCopyId = () => {
+    navigator.clipboard.writeText(data.id);
+    toast.success("Agent ID copied to clipboard");
   };
+
+  const handleCopyInstructions = () => {
+    if (!data.instructions) return;
+    navigator.clipboard.writeText(data.instructions);
+    toast.success("Instructions copied to clipboard");
+  };
+
+  const formattedCreated = data.createdAt
+    ? format(new Date(data.createdAt), "MMM d, yyyy")
+    : "Recently";
+
+  const formattedUpdated = data.updatedAt
+    ? format(new Date(data.updatedAt), "MMM d, yyyy")
+    : formattedCreated;
+
+  const wordCount = data.instructions
+    ? data.instructions.trim().split(/\s+/).filter(Boolean).length
+    : 0;
 
   return (
     <>
@@ -118,291 +154,397 @@ export const AgentIdView = ({ agentId }: Props) => {
         onOpenChange={setUpdateAgentDialogOpen}
         initialValues={data}
       />
-      <div className="">
-        <div className="mx-auto max-w-6xl space-y-6 px-4">
-          {/* --- BREADCRUMB --- */}
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/agents">Agents</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{data.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
 
-          {/* --- HEADER --- */}
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-            <div className="flex items-start gap-4">
-              <GeneratedAvatar
-                seed={data.name}
-                variant="botttsNeutral"
-                className="size-16"
-              />
-
-              <div className="space-y-1">
-                <h1 className="text-foreground text-3xl font-bold tracking-tight">
-                  {data.name}
-                </h1>
-                <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
-                  <Badge
-                    variant="outline"
-                    className="font-mono text-xs font-normal"
-                  >
-                    <Hash size={10} className="mr-1 inline" />
-                    {data.id}
-                  </Badge>
-                  <span className="text-muted-foreground/30 hidden sm:inline">
-                    |
-                  </span>
-                  <span className="text-xs">
-                    Created {formatDate(data.createdAt)}
-                  </span>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="border-border bg-card gap-4 border p-6 shadow-2xl sm:max-w-md sm:rounded-xl">
+          <AlertDialogHeader className="gap-1.5 text-left">
+            <AlertDialogTitle className="text-base font-semibold">
+              Delete {data.name}?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground text-xs">
+              This action cannot be undone. This will permanently delete this
+              agent
+              {data.meetingCount > 0 ? (
+                <>
+                  {" "}
+                  and remove its association with{" "}
+                  <strong className="text-foreground font-medium">
+                    {data.meetingCount}
+                  </strong>{" "}
+                  {data.meetingCount === 1 ? "meeting" : "meetings"}.
+                </>
+              ) : (
+                "."
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-3 gap-2">
+            <AlertDialogCancel
+              disabled={removeAgent.isPending}
+              className="border-border h-8 rounded-lg text-xs"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground h-8 rounded-lg text-xs"
+              disabled={removeAgent.isPending}
+              onClick={() => removeAgent.mutate({ id: agentId })}
+            >
+              {removeAgent.isPending ? (
+                <div className="flex items-center gap-1.5">
+                  <Spinner className="size-3.5" />
+                  <span>Deleting...</span>
                 </div>
+              ) : (
+                "Delete Agent"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="space-y-6">
+        {/* Breadcrumbs */}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/agents" className="text-xs">
+                  Agents
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-foreground text-xs font-medium">
+                {data.name}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        {/* Page Header */}
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="flex min-w-0 items-center gap-3.5">
+            <GeneratedAvatar
+              seed={data.name}
+              variant="botttsNeutral"
+              className="size-11 shrink-0"
+            />
+
+            <div className="min-w-0 flex-1 space-y-0.5">
+              <h1 className="text-foreground truncate text-xl font-semibold tracking-tight">
+                {data.name}
+              </h1>
+
+              <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={handleCopyId}
+                  title="Click to copy ID"
+                  className="text-muted-foreground hover:text-foreground cursor-pointer font-mono text-[11px] transition-colors"
+                >
+                  #{data.id.slice(0, 8)}
+                </button>
+
+                <span>Created {formattedCreated}</span>
+
+                <span>
+                  {data.meetingCount}{" "}
+                  {data.meetingCount === 1 ? "meeting" : "meetings"}
+                </span>
               </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setUpdateAgentDialogOpen(true)}
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Configure
-              </Button>
-              <Button>
-                <Play className="mr-2 h-4 w-4" />
-                Test Agent
-              </Button>
-
-              {/* Mobile Actions Menu */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild className="md:hidden">
-                  <Button variant="ghost" size="icon">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>View Logs</DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
-                    Delete Agent
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
 
-          {/* --- MAIN GRID --- */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* === LEFT COLUMN (2/3) === */}
-            <div className="flex flex-col gap-6 lg:col-span-2">
-              {/* 1. System Instructions */}
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                  <div className="flex items-center gap-2">
-                    <ClipboardList className="text-muted-foreground h-4 w-4" />
-                    <CardTitle className="text-base">
-                      System Instructions
-                    </CardTitle>
-                  </div>
-                  <Button variant="ghost" size="sm" className="h-8 text-xs">
-                    Edit
-                  </Button>
-                </CardHeader>
-                <Separator />
-                <CardContent className="pt-6">
-                  <ScrollArea className="bg-muted/50 h-[200px] w-full rounded-md border p-4">
-                    <pre className="text-foreground font-mono text-sm leading-relaxed whitespace-pre-wrap">
-                      {data.instructions || "No instructions provided."}
-                    </pre>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
+          {/* Top-Right Action Controls */}
+          <div className="flex shrink-0 items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setUpdateAgentDialogOpen(true)}
+              className="border-border h-8 cursor-pointer gap-1.5 rounded-lg text-xs font-medium"
+            >
+              <PencilIcon className="text-muted-foreground size-3" />
+              <span>Edit</span>
+            </Button>
 
-              {/* 2. Integrations */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
-                        <Calendar className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Google Calendar</h4>
-                        <p className="text-muted-foreground mt-1 text-xs">
-                          Read/write events
-                        </p>
-                        <div className="mt-3 flex items-center gap-1.5">
-                          <span className="relative flex h-2 w-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                          </span>
-                          <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                            Active
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            <Button
+              asChild
+              size="sm"
+              className="bg-primary text-primary-foreground h-8 cursor-pointer gap-1.5 rounded-lg px-3 text-xs font-medium shadow-xs hover:opacity-90"
+            >
+              <Link href={`/meetings?agentId=${data.id}`}>
+                <VideoIcon className="size-3" />
+                <span>Schedule meeting</span>
+              </Link>
+            </Button>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-                        <Mail className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Email Gateway</h4>
-                        <p className="text-muted-foreground mt-1 text-xs">
-                          Inbox processing
-                        </p>
-                        <div className="mt-3 flex items-center gap-1.5">
-                          <span className="relative flex h-2 w-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                          </span>
-                          <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                            Active
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="border-border text-muted-foreground hover:text-foreground size-8 cursor-pointer rounded-lg border"
+                  aria-label="More options"
+                >
+                  <MoreHorizontalIcon className="size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                sideOffset={6}
+                className="border-border bg-card text-card-foreground min-w-[150px] rounded-lg p-1 shadow-md"
+              >
+                <DropdownMenuItem
+                  onClick={() => setUpdateAgentDialogOpen(true)}
+                  className="cursor-pointer gap-2 rounded-md px-2 py-1.5 text-xs"
+                >
+                  <PencilIcon className="text-muted-foreground size-3" />
+                  <span>Configure agent</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  asChild
+                  className="cursor-pointer gap-2 rounded-md px-2 py-1.5 text-xs"
+                >
+                  <Link href={`/meetings?agentId=${data.id}`}>
+                    <VideoIcon className="text-muted-foreground size-3" />
+                    <span>View meetings</span>
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={handleCopyId}
+                  className="cursor-pointer gap-2 rounded-md px-2 py-1.5 text-xs"
+                >
+                  <CopyIcon className="text-muted-foreground size-3" />
+                  <span>Copy ID</span>
+                </DropdownMenuItem>
+
+                <div className="bg-border my-1 h-px" />
+
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="cursor-pointer gap-2 rounded-md px-2 py-1.5 text-xs"
+                >
+                  <Trash2Icon className="size-3" />
+                  <span>Delete agent</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Hairline Divider */}
+        <div className="border-border border-b" />
+
+        {/* 2-Column Responsive Workspace with Synchronized Heights */}
+        <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-3">
+          {/* Left Column (2/3): Instructions & Meetings */}
+          <div className="flex flex-col justify-between space-y-6 lg:col-span-2">
+            {/* System Instructions Section */}
+            <div className="flex min-h-0 flex-1 flex-col space-y-2">
+              <div className="flex h-5 shrink-0 items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                    System Instructions
+                  </h2>
+                  <span className="text-muted-foreground/70 font-mono text-[11px]">
+                    ({wordCount} {wordCount === 1 ? "word" : "words"})
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {data.instructions && (
+                    <button
+                      type="button"
+                      onClick={handleCopyInstructions}
+                      className="text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 text-xs transition-colors"
+                    >
+                      <CopyIcon className="size-3" />
+                      <span>Copy</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setUpdateAgentDialogOpen(true)}
+                    className="text-muted-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 text-xs transition-colors"
+                  >
+                    <PencilIcon className="size-3" />
+                    <span>Edit</span>
+                  </button>
+                </div>
               </div>
+
+              {/* Flex-stretched Instructions surface */}
+              {data.instructions ? (
+                <div className="border-border bg-card text-foreground max-h-[360px] min-h-[110px] flex-1 overflow-y-auto rounded-lg border p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap">
+                  {data.instructions}
+                </div>
+              ) : (
+                <div className="border-border text-muted-foreground flex min-h-[110px] flex-1 flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center text-xs">
+                  No system instructions configured.{" "}
+                  <button
+                    type="button"
+                    onClick={() => setUpdateAgentDialogOpen(true)}
+                    className="text-foreground mt-1 cursor-pointer underline underline-offset-4 hover:opacity-80"
+                  >
+                    Add instructions
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* === RIGHT COLUMN (1/3) === */}
-            <div className="flex flex-col gap-4">
-              {/* Stats Card */}
-              <Card>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-muted-foreground text-sm font-medium">
-                        Total Meetings
-                      </p>
-                      <p className="mt-2 text-3xl font-bold">
-                        {data.meetingCount}
-                      </p>
-                    </div>
-                    <div className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
-                      <Video className="h-6 w-6" />
-                    </div>
-                  </div>
-                  <div className="text-muted-foreground mt-4 flex items-center gap-2 text-xs">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                    <span className="font-medium text-green-600 dark:text-green-400">
-                      Operational
-                    </span>
-                    <span>• Updated {formatDate(data.updatedAt)}</span>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Associated Meetings Section */}
+            <div className="shrink-0 space-y-2">
+              <div className="flex h-5 items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                    Associated Meetings
+                  </h2>
+                  <span className="text-muted-foreground/70 font-mono text-[11px]">
+                    ({meetingsData?.total ?? data.meetingCount})
+                  </span>
+                </div>
 
-              {/* Details Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-semibold">
-                    Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-xs font-medium">
-                      Owner ID
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Fingerprint className="text-muted-foreground h-3.5 w-3.5" />
-                      <code className="bg-muted truncate rounded px-1.5 py-0.5 font-mono text-xs">
-                        {data.userId}
-                      </code>
-                    </div>
-                  </div>
+                {meetingsData?.total ? (
+                  <Link
+                    href={`/meetings?agentId=${data.id}`}
+                    className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs transition-colors"
+                  >
+                    <span>View all</span>
+                    <ArrowRightIcon className="size-3" />
+                  </Link>
+                ) : null}
+              </div>
 
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-xs font-medium">
-                      Created At
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="text-muted-foreground h-3.5 w-3.5" />
-                      <span className="text-sm">
-                        {formatDate(data.createdAt)}
-                      </span>
-                    </div>
-                  </div>
+              {/* Single un-nested list surface */}
+              {meetingsData?.items && meetingsData.items.length > 0 ? (
+                <div className="border-border bg-card divide-border divide-y overflow-hidden rounded-lg border">
+                  {meetingsData.items.map((meeting) => (
+                    <Link
+                      key={meeting.id}
+                      href={`/meetings/${meeting.id}`}
+                      className="hover:bg-muted/40 group flex items-center justify-between px-4 py-3 transition-colors"
+                    >
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="text-foreground group-hover:text-primary truncate text-xs font-medium">
+                          {meeting.name}
+                        </div>
+                        <div className="text-muted-foreground text-[11px]">
+                          {meeting.createdAt
+                            ? format(new Date(meeting.createdAt), "MMM d, yyyy")
+                            : "Recent"}
+                        </div>
+                      </div>
 
-                  <div className="flex flex-col gap-1">
-                    <span className="text-muted-foreground text-xs font-medium">
-                      Security
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="text-muted-foreground h-3.5 w-3.5" />
-                      <Badge
-                        variant="secondary"
-                        className="text-xs font-normal"
-                      >
-                        Private Agent
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Actions List */}
-              <Card>
-                <CardContent className="space-y-1 p-2">
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        disabled={removeAgent.isPending}
-                        variant="ghost"
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10 w-full justify-between font-normal"
-                      >
-                        {removeAgent.isPending ? <Spinner /> : "Delete Agent"}
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you sure you want to delete {data.name}?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {data.meetingCount === 0 &&
-                            "This action cannot be undone. This will permanently delete this agent and remove all associated data from our servers."}
-                          This action cannot be undone. This will permanently
-                          delete <strong>{data.meetingCount} </strong>
-                          {data.meetingCount === 1
-                            ? "meeting"
-                            : "meetings"}{" "}
-                          from the server
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-6">
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive hover:bg-destructive/80"
-                          disabled={removeAgent.isPending}
-                          onClick={() =>
-                            removeAgent.mutate({
-                              id: agentId,
-                            })
-                          }
+                      <div className="ml-3 flex shrink-0 items-center gap-2.5">
+                        <span
+                          className={cn(
+                            "rounded border px-2 py-0.5 text-[10px] font-medium capitalize",
+                            statusStyleMap[meeting.status]?.className ||
+                              "bg-muted text-muted-foreground",
+                          )}
                         >
-                          <TrashIcon />
-                          {removeAgent.isPending ? <Spinner /> : "Delete Agent"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </CardContent>
-              </Card>
+                          {meeting.status}
+                        </span>
+                        <ChevronRightIcon className="text-muted-foreground/40 group-hover:text-foreground size-3.5 transition-colors" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="border-border text-muted-foreground rounded-lg border border-dashed p-6 text-center text-xs">
+                  No meetings conducted with this agent yet.{" "}
+                  <Link
+                    href={`/meetings?agentId=${data.id}`}
+                    className="text-foreground underline underline-offset-4 hover:opacity-80"
+                  >
+                    Schedule meeting
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column (1/3): Unified Sidebar Inspector with Synchronized Height */}
+          <div className="flex min-h-0 flex-col space-y-2">
+            <div className="flex h-5 shrink-0 items-center">
+              <h2 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                Properties
+              </h2>
+            </div>
+
+            <div className="border-border bg-card flex flex-1 flex-col justify-between space-y-4 rounded-lg border p-4">
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Agent ID</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyId}
+                    title="Copy ID"
+                    className="text-foreground cursor-pointer font-mono text-[11px] hover:underline"
+                  >
+                    #{data.id.slice(0, 8)}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Created</span>
+                  <span className="text-foreground">{formattedCreated}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Last modified</span>
+                  <span className="text-foreground">{formattedUpdated}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Sessions</span>
+                  <span className="text-foreground font-mono">
+                    {data.meetingCount}
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-border border-b" />
+
+              <div className="space-y-2">
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-primary text-primary-foreground h-8 w-full cursor-pointer text-xs shadow-xs"
+                >
+                  <Link href={`/meetings?agentId=${data.id}`}>
+                    <VideoIcon className="mr-1.5 size-3.5" />
+                    <span>Schedule meeting</span>
+                  </Link>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setUpdateAgentDialogOpen(true)}
+                  className="border-border h-8 w-full cursor-pointer text-xs"
+                >
+                  <PencilIcon className="text-muted-foreground mr-1.5 size-3.5" />
+                  <span>Configure agent</span>
+                </Button>
+              </div>
+
+              <div className="border-border border-b" />
+
+              <div>
+                <button
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/15 bg-destructive/10 flex w-full items-center justify-center rounded-lg p-2 text-sm transition-colors duration-300"
+                >
+                  <Trash2Icon className="text-destructive mr-2 size-3.5" />
+                  <span>Delete agent</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

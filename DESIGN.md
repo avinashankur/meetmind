@@ -205,11 +205,12 @@ To ensure an enterprise-grade user experience and maintain visual restraint acro
 - **No Nested Modals**: Modals containing form inputs (e.g. `NewMeetingDialog`) must use inline `Select` components for related entity choices, never launching a secondary modal or command drawer inside the dialog.
 - **Dialog Scoping**: Native shadcn `Dialog` is reserved strictly for complex creation workflows, dedicated multi-field forms, destructive confirmations (`AlertDialog`), and the global command palette (`Cmd+K`).
 
-### 3. Elimination of Superfluous Dot Elements (Anti-Dot-Overuse Rule)
+### 3. Elimination of Superfluous Dot Elements & Fake Statuses (Anti-Dot & Anti-Sparkle Rule)
 
-- **No Decorative Dots**: Do not scatter decorative dots (`size-1.5 rounded-full`, `size-2 rounded-full`, pinging status dots, or bullet text `•`) across status badges, table headers, list cards, or metadata bars.
-- **Icon-Driven Status**: Status indicators must rely on clean, recognizable semantic icons (e.g. `ClockArrowUpIcon`, `VideoIcon`, `CircleCheckIcon`, `LoaderIcon`) combined with subtle semantic color classes (`border-emerald-500/25 bg-emerald-500/10 text-emerald-700`). Redundant dot indicators next to icons are strictly forbidden.
-- **Pinging Animations**: Pulsing/pinging indicators (`animate-ping`) are reserved exclusively for live hardware recording feeds or active WebRTC streams. For loading states, use standard accessible spinners (`Loader2Icon animate-spin`) or shadcn `Skeleton`.
+- **Strict Prohibition of "Ready" Statuses & Blinking Dots**: Never add a synthetic "Ready", "Online", or "Active" badge with an animated pulse/ping dot (`animate-pulse`, `animate-ping`, `size-1 rounded-full`, `size-1.5 rounded-full`) to static entities such as AI agents, bots, or configurations. Status badges are strictly restricted to entities with genuine, dynamic runtime lifecycles (e.g., meeting states: `upcoming`, `active`, `processing`, `completed`, `cancelled`). Static assets must display their clean entity name and identifiers without fake status indicators.
+- **No Superfluous Sparkle / Magic Icons on System Prompts**: Never attach decorative `SparklesIcon` or "AI magic" stars to standard labels, table columns, or prompt containers (such as `Instructions`, `System Prompt`, or markdown previews). Use understated, objective editorial typography (`Instructions`, `System Prompt`) with clean font-mono tracking and neutral text styling without distracting decorative iconography.
+- **Icon-Driven Status for Live States**: Real status indicators must rely on clean, recognizable semantic icons (e.g. `ClockArrowUpIcon`, `VideoIcon`, `CircleCheckIcon`, `LoaderIcon`) combined with subtle semantic color classes (`border-emerald-500/25 bg-emerald-500/10 text-emerald-700`). Redundant dot indicators next to icons are strictly forbidden.
+- **Pinging Animations Scope**: Pulsing/pinging indicators (`animate-ping`) are reserved exclusively for live hardware recording feeds or active WebRTC streams. For loading states, use standard accessible spinners (`Loader2Icon animate-spin`) or shadcn `Skeleton`.
 
 ### 4. Typography Restraint & Capitalization Rules
 
@@ -223,3 +224,41 @@ To ensure an enterprise-grade user experience and maintain visual restraint acro
 - **Accessible Overlays**: Overlay components (`Dialog`, `Sheet`, `Drawer`) must always include accessible `DialogHeader`, `DialogTitle`, and `DialogDescription` directly inside `DialogContent`. Use `className="sr-only"` when visually hidden.
 - **Semantic Theme Tokens**: All styles must use project semantic color tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-card`) without hardcoded arbitrary hex values.
 - **Decoupling Brand Identity from UI Accent**: The brand crimson color is encapsulated strictly within `--brand` (`text-brand`, `bg-brand`, `border-brand`). The shadcn `--accent` token is reserved exclusively for soft neutral hover/focus highlight states on dropdown items (`SelectItem`), menus, and ghost buttons (`bg-accent`, `text-accent-foreground`). Never assign bold brand colors to `--accent` to prevent harsh hover overlays on standard controls.
+
+### 6. Action Menus & Popover Overlays (Three-Dot Menu Specification)
+
+To maintain consistent tactile quality and sharp contrast across light and dark modes, all table and card action menus must adhere to the standardized popover pattern:
+
+- **Horizontal Trigger (`MoreHorizontalIcon`)**: Action menu trigger buttons must use the horizontal three-dot icon (`MoreHorizontalIcon`, `size-4`), styled with `Button variant="ghost" size="icon" className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/80 data-[state=open]:bg-muted data-[state=open]:text-foreground transition-colors"`. The `data-[state=open]` state ensures the button remains visually anchored while the menu is open.
+- **Card Surface Contrast & Elevation**: Popover containers (`DropdownMenuContent`) must render with elevated card surface tokens and blur: `className="border-border/80 bg-card/98 text-card-foreground min-w-[180px] rounded-xl p-1.5 shadow-xl backdrop-blur-md dark:bg-card/90"`. Avoid raw, unstyled `bg-popover` on light themes, as it blends into the paper canvas background.
+- **Offsets & Alignment**: Set `sideOffset={6}` and `align="end"` to position the menu neatly below the trigger.
+- **Group Hierarchy**: Group standard actions inside `<DropdownMenuGroup>`, followed by a hairline divider `<DropdownMenuSeparator className="bg-border/60 my-1" />`, and isolate destructive actions inside a secondary `<DropdownMenuGroup>`.
+- **Item Ergonomics**: Each item uses `className="hover:bg-accent focus:bg-accent text-foreground cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium transition-colors"`, accompanied by `size-3.5 text-muted-foreground` semantic icons.
+- **Sentence Case Actions**: Labels must follow sentence case (e.g. `View details`, `Configure agent`, `Schedule meeting`, `Copy agent ID`, `Delete agent`).
+- **Native Destructive Variant**: Destructive actions must use the shadcn native `variant="destructive"` prop on `DropdownMenuItem` rather than ad-hoc color classes.
+
+### 7. Minimization of Borders & Hairline Framing (The Subtle Definition Rule)
+
+To prevent visual clutter, harsh grids, and "box-inside-a-box" fatigue without leaving components blurry or ungrounded, interface layouts must minimize borders through delicate hairline framing (`border-border/40` to `border-border/50`) paired with color hierarchy:
+
+- **No Nested Outer Containers for Card Grids**: Entity card grids (such as AI agents) must live directly on the page layout. Do not encapsulate an entire grid of cards inside another outer bordered container with a bordered sub-header.
+- **Hairline Framing Over Thick Borders**: Use subtle, translucent borders (`border border-border/40` or `border border-border/50`) on cards, search controls, and modals. This gives components crisp structural edges without high-contrast black strokes.
+- **Elimination of Arbitrary Internal Divider Lines**: Do not draw arbitrary rule dividers (`border-t`, `border-b`) inside cards to separate content from footers or metadata. Rely on structural flexbox whitespace (`pt-1`, `mt-auto`) to define section boundaries naturally.
+- **No Avatar Ring Overkill**: Do not wrap avatar elements in redundant rings (`ring-1 ring-border`). Avatars already possess distinct geometry and background contrast.
+- **Subtle Metadata Badges**: Render secondary badges (e.g. meeting counts, counts, telemetry chips) as soft tinted pills with hairline borders (`bg-muted/50 border border-border/40 text-secondary`) rather than harsh high-contrast tags.
+- **Delicate Segmented Controls**: Segmented toggles (e.g. Grid vs Table switcher) use soft containers (`bg-muted/40 border border-border/40 p-0.5 rounded-lg`) with elevated active pills (`bg-card border border-border/30 shadow-2xs text-foreground font-semibold`).
+- **Refined Dialogs & Modals Framing**:
+  - Modal windows (e.g. `NewAgentDialog`, `UpdateAgentDialog`, `AlertDialog`) use delicate hairline framing (`border border-border/50`), deep drop shadow (`shadow-2xl sm:rounded-2xl`), and backdrop blur (`backdrop-blur-xl`).
+  - Inputs and textareas inside dialogs use a soft background trough with delicate borders (`bg-muted/20 border border-border/50 hover:border-border/80 focus:border-ring focus:bg-background`), ensuring tactile affordance without harsh stroke weight.
+  - Interactive starter template chips use subtle pill borders: delicate idle pills (`bg-muted/40 border border-border/40 text-secondary hover:text-foreground hover:bg-muted/70 hover:border-border/60`) that switch to solid primary contrast (`bg-primary text-primary-foreground border border-primary shadow-2xs font-semibold`) when selected.
+- **Dashboard Canvas vs Sidebar Hierarchy (The Standard SaaS Contrast Rule)**:
+  - The navigation sidebar is the grounded, recessed column (`--sidebar: #f5f5f4` in light mode, `#0b0b0c` in dark mode).
+  - The main dashboard canvas is the bright, focused workspace (`--background: #fafafa` in light mode, `#121213` in dark mode).
+  - Content cards sit elevated on the canvas (`--card: #ffffff` in light mode, `#18181a` in dark mode) with subtle hairline borders (`border-border/50`).
+  - Active navigation buttons inside the sidebar pop cleanly via elevated card styling (`bg-card border-border shadow-2xs`).
+
+### 8. Anti-Fabrication & Text Restraint (Honest Data Architecture)
+
+- **Zero Tolerance for Fake Specs or Pipelines**: Never invent speculative technical specifications, simulated hardware meters, or fake integration badges (e.g. fake "WebRTC Voice Stream Connected", fake "Meeting Synthesis Active", or hardcoded "Gemini 2.5 Flash" model tags) that do not exist in the database schema or active backend procedures. If a property is not part of the entity's real state, it must not be rendered.
+- **Eliminate Explanatory Copy Bloat**: Do not pad detail views with redundant, generic marketing descriptions (e.g., explaining what system instructions do or narrating why an agent exists). Entity pages should be utilitarian, focused, and concise.
+- **Show Genuine Related Data**: Prioritize authentic relationships from the data model—such as querying and displaying real meetings associated with an entity—over static, fabricated visual widgets.
