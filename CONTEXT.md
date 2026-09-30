@@ -1,7 +1,7 @@
 # CONTEXT.md
 
 > This file provides essential context for AI coding assistants and new contributors. It is intentionally dense — read fully before making changes.  
-> **Last updated:** 2026-09-24
+> **Last updated:** 2026-09-30
 
 ---
 
@@ -67,7 +67,8 @@ src/
 │   ├── call/                   # Video call room layout, audio controls, and AI bot integration
 │   ├── dashboard/              # Sidebar, navigation bar, command palette, stats
 │   ├── home/                   # Marketing and landing pages
-│   └── auth/                   # Login/registration view components
+│   ├── auth/                   # Login/registration view components
+│   └── premium/                # Planned billing & usage limits (stubs)
 ├── trpc/
 │   ├── client.tsx              # tRPC React client provider
 │   ├── init.ts                 # tRPC context creation & protectedProcedure middleware
