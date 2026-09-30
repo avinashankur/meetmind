@@ -1,6 +1,6 @@
 # Architecture — MeetMind
 
-> **Last updated:** 2026-09-24  
+> **Last updated:** 2026-09-29  
 > **Authors:** MeetMind Engineering  
 > **Status:** Current
 
@@ -277,6 +277,38 @@ sequenceDiagram
 
 ---
 
+## Engineering Challenges
+
+Known hard problems in this system and where each is handled:
+
+| Challenge                              | Why it is hard                                                                                                                                                         | Current mitigation                                                                                                                                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Coordinating realtime video and AI** | The app must know when a call truly started, when the AI should join, when it ended, and when post-processing begins.                                                  | Stream webhook events are the single source of lifecycle truth (`src/app/api/webhook/route.ts`). See [Concept 002](docs/concepts/002-realtime-voice-agent-orchestration.md).                                                       |
+| **Webhook reliability**                | Webhooks can arrive late, fail, retry, or arrive out of order.                                                                                                         | Handlers check meeting status before transitioning it (e.g. `call.session_started` skips meetings already active/processing/completed/cancelled). Idempotency keys, structured logging, and webhook event storage are future work. |
+| **Meeting state management**           | The `status` field drives every UI state; an inaccurate lifecycle breaks the whole product experience.                                                                 | Strict transition guards in webhook handlers; the flow is `upcoming → active → processing → completed` (plus `cancelled`).                                                                                                         |
+| **Transcript parsing**                 | Stream delivers transcripts as JSONL at a signed URL; lines must be parsed safely with timestamps preserved and unknown speakers tolerated.                            | `jsonl-parse-stringify` in the Inngest pipeline and `meetings.getTranscript`.                                                                                                                                                      |
+| **Speaker attribution**                | Speakers are both human users (`user` table) and AI agents (`agents` table); enrichment must merge both sources.                                                       | The `add-speakers` step queries both tables. See [Concept 003](docs/concepts/003-speaker-diarization-and-turn-reconstruction.md).                                                                                                  |
+| **Background processing**              | Summarization depends on external transcript URLs and OpenAI latency; running it inside a webhook request would be fragile.                                            | Inngest durable function with named, memoized steps. See [Concept 001](docs/concepts/001-durable-execution-and-step-memoization.md).                                                                                               |
+| **Server/client boundaries**           | Stream secrets, database access, and OpenAI keys must never reach the browser.                                                                                         | Server-only clients in `src/lib/stream-video.ts`, `src/lib/stream-chat.ts`, `src/db/index.ts`; client components access data exclusively through protected tRPC procedures.                                                        |
+| **External service configuration**     | Six services (Better Auth URL, OAuth callbacks, Stream keys, Stream webhook target, OpenAI key, Neon connection) must all be configured correctly for the app to work. | Documented in the README configuration table; failures covered by [Runbook 004](docs/runbooks/004-local-setup-auth-and-configuration-failures.md).                                                                                 |
+| **Browser media permissions**          | Camera/microphone access requires user permission and a secure origin.                                                                                                 | Production is HTTPS-only; permission and device failures covered by [Runbook 003](docs/runbooks/003-webrtc-call-and-ai-agent-connection-failures.md).                                                                              |
+| **AI cost and rate limits**            | Live AI, summarization, and post-meeting chat all consume OpenAI tokens; long meetings and frequent chats increase usage.                                              | No usage tracking or rate limits yet — a production hardening priority.                                                                                                                                                            |
+
+---
+
+## Known Limitations
+
+- One selected AI agent per meeting; multi-agent meetings are not supported.
+- Transcription is configured for English only.
+- No calendar integration.
+- No automated test suite is configured.
+- Dashboard home and premium areas exist as product directions but are not fully implemented.
+- Post-meeting chat relies primarily on the generated summary, not full-transcript retrieval.
+- Webhook observability is minimal (no event storage or retry dashboards).
+- No built-in export flow for summaries, transcripts, or recordings.
+
+---
+
 ## Related Documents
 
 - [CONTEXT.md](CONTEXT.md) — Architectural invariants, tech stack versions, and glossary for developers and AI agents.
@@ -285,3 +317,5 @@ sequenceDiagram
 - [Architecture Decision Records](docs/adr/) — Historical log of technical decisions and trade-offs.
 - [Runbooks](docs/runbooks/) — Operational guides for local development and failure recovery.
 - [Concepts](docs/concepts/) — Algorithmic and theoretical deep-dives.
+- [How-To Guides](docs/how-tos/) — Task-oriented guides, including production deployment.
+- [Project Overview & PRD](MeetMind-Project-Overview.md) — Product requirements, feature breakdown, and detailed workflows.
