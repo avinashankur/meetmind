@@ -52,6 +52,7 @@ export const CallConnect = ({
       tokenProvider: generateToken,
     });
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setClient(_client);
 
     return () => {
@@ -68,14 +69,19 @@ export const CallConnect = ({
     const _call = client.call("default", meetingId);
     _call.camera.disable();
     _call.microphone.disable();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCall(_call);
 
     return () => {
-      if (_call.state.callingState !== CallingState.LEFT) {
-        _call.leave();
-        _call.endCall();
-        setCall(undefined);
+      if (
+        _call.state.callingState === CallingState.JOINED ||
+        _call.state.callingState === CallingState.RECONNECTING
+      ) {
+        _call.leave().catch((error) => {
+          console.warn("Failed to leave call on unmount:", error);
+        });
       }
+      setCall(undefined);
     };
   }, [client, meetingId]);
 

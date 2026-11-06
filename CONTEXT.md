@@ -23,7 +23,7 @@ MeetMind is an AI-powered meeting assistant web platform built with Next.js 16 A
 | **Database Tooling**     | Drizzle Kit                   | 0.31.8         | Schema migrations via `drizzle-kit push` and Studio             |
 | **Authentication**       | Better Auth                   | 1.4.5          | Session cookies, Email/Password, GitHub, and Google OAuth       |
 | **Video Infrastructure** | Stream Video SDK              | 1.18.0         | WebRTC calling, recording, live closed-captions, transcription  |
-| **Realtime In-Call AI**  | Stream OpenAI Realtime API    | 0.1.4          | Low-latency bidirectional voice participant in calls            |
+| **Realtime In-Call AI**  | Stream OpenAI Realtime API    | 0.4.x          | Low-latency bidirectional voice participant in calls            |
 | **Chat Infrastructure**  | Stream Chat SDK               | 9.27.2         | Real-time channel messaging for post-meeting queries            |
 | **Background Jobs**      | Inngest + Agent Kit           | 4.2.6 / 0.13.2 | Durable multi-step workflows with step memoization & retries    |
 | **LLM Provider**         | OpenAI API                    | 6.15.0         | GPT-4o for meeting summarization and post-call Q&A              |
@@ -127,6 +127,15 @@ src/
 - Follow the design system defined in `DESIGN.md` and `src/app/globals.css`.
 - Use semantic classes (`bg-background`, `text-foreground`, `text-accent`, `border-border`).
 - Do NOT introduce raw arbitrary hex codes (`[#...]`) in component classes.
+
+**Call Lifecycle:**
+
+- **Host Definition:** The host of a Meeting is strictly the user who owns it (`meeting.userId`). The AI Agent is never the host.
+- **Ending the Call:** A call ends only when the host leaves or clicks hang-up. In the Stream webhook, `call.session_participant_left` checks whether the leaving participant matches `meeting.userId` before terminating the call.
+- **Agent Drops:** If the AI Agent disconnects, the server logs the drop reason and keeps the call running. The Agent leaving never ends a call.
+- **Other Participants:** A guest or attendee leaving never ends the call.
+- **Client Hang-Up:** If the call is live, hang-up ends the call for everyone and transitions to the ended screen. If the call was already ended or left, hang-up skips SDK calls and immediately transitions to the ended screen without throwing.
+- **Page Unmount Cleanup:** Leaving or navigating away from the call page only leaves the call (`call.leave()`), and only if the user had joined and hasn't left yet. Cleanup never ends the call for everyone, preventing React development double-mount from ending meetings prematurely.
 
 ---
 

@@ -1,6 +1,14 @@
 "use client";
 
-import { CallControls, SpeakerLayout } from "@stream-io/video-react-sdk";
+import {
+  IconButton,
+  ReactionsButton,
+  ScreenShareButton,
+  SpeakerLayout,
+  SpeakingWhileMutedNotification,
+  ToggleAudioPublishingButton,
+  ToggleVideoPublishingButton,
+} from "@stream-io/video-react-sdk";
 import Image from "next/image";
 import Link from "next/link";
 import "@stream-io/video-react-sdk/dist/css/styles.css"; // Ensure styles are imported
@@ -55,7 +63,20 @@ export const CallActive = ({ onLeave, meetingName }: Props) => {
       {/* --- Footer Controls --- */}
       <div className="pointer-events-none absolute right-0 bottom-8 left-0 z-20 flex justify-center">
         <div className="pointer-events-auto rounded-full border border-white/10 bg-zinc-900/90 px-2 py-1.5 shadow-2xl backdrop-blur-lg">
-          <CallControls onLeave={onLeave} />
+          <div className="str-video__call-controls">
+            <SpeakingWhileMutedNotification>
+              <ToggleAudioPublishingButton />
+            </SpeakingWhileMutedNotification>
+            <ToggleVideoPublishingButton />
+            <ScreenShareButton />
+            <ReactionsButton />
+            <IconButton
+              icon="call-end"
+              variant="danger"
+              title="Leave call"
+              onClick={onLeave}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -96,15 +96,20 @@ export async function POST(req: NextRequest) {
     }
 
     const call = streamVideo.video.call("default", meetingId);
-    const realTimeClient = await streamVideo.video.connectOpenAi({
-      call,
-      openAiApiKey: process.env.OPENAI_API_KEY!,
-      agentUserId: existingAgent.id,
-    });
+    try {
+      const realTimeClient = await streamVideo.video.connectOpenAi({
+        call,
+        openAiApiKey: process.env.OPENAI_API_KEY!,
+        agentUserId: existingAgent.id,
+        model: "gpt-realtime",
+      });
 
-    realTimeClient.updateSession({
-      instructions: existingAgent.instructions,
-    });
+      realTimeClient.updateSession({
+        instructions: existingAgent.instructions,
+      });
+    } catch (error) {
+      console.error("Error connecting OpenAI agent to call:", error);
+    }
   } else if (eventType === "call.session_participant_left") {
     const event = payload as CallSessionParticipantLeftEvent;
     const meetingId = event.call_cid.split(":")[1];
@@ -116,8 +121,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const call = streamVideo.video.call("default", meetingId);
-    await call.end();
+    const [existingMeeting] = await db
+      .select()
+      .from(meetings)
+      .where(eq(meetings.id, meetingId));
+
+    if (!existingMeeting) {
+      return NextResponse.json({ error: "Meeting not found" }, { status: 404 });
+    }
+
+    const participantUserId = event.participant?.user?.id;
+
+    if (participantUserId === existingMeeting.userId) {
+      const call = streamVideo.video.call("default", meetingId);
+      await call.end();
+    } else if (participantUserId === existingMeeting.agentId) {
+      console.warn(
+        `Agent ${participantUserId} disconnected from meeting ${meetingId}. Reason: ${event.reason ?? "unknown"}`,
+      );
+    }
   } else if (eventType === "call.session_ended") {
     const event = payload as CallEndedEvent;
     const meetingId = event.call.custom?.meetingId;

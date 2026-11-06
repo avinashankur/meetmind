@@ -1,4 +1,4 @@
-import { StreamTheme, useCall } from "@stream-io/video-react-sdk";
+import { CallingState, StreamTheme, useCall } from "@stream-io/video-react-sdk";
 import { useState } from "react";
 import { CallLobby } from "./call-lobby";
 import { CallActive } from "./call-active";
@@ -20,10 +20,23 @@ export const CallUI = ({ meetingName }: Props) => {
     setShow("call");
   };
 
-  const handleLeave = () => {
-    if (!call) return;
+  const handleLeave = async () => {
+    if (!call) {
+      setShow("ended");
+      return;
+    }
 
-    call.endCall();
+    const isAlreadyLeft = call.state.callingState === CallingState.LEFT;
+    const isEnded = Boolean(call.state.endedAt);
+
+    if (!isAlreadyLeft && !isEnded) {
+      try {
+        await call.endCall();
+      } catch (error) {
+        console.warn("Failed to end call cleanly:", error);
+      }
+    }
+
     setShow("ended");
   };
 
