@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { eq, and, not } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 
 import {
   MessageNewEvent,
@@ -18,6 +18,11 @@ import { streamVideo } from "@/lib/stream-video";
 import { inngest } from "@/inngest/client";
 import { generateAvatarUri } from "@/lib/avatar";
 import { streamChat } from "@/lib/stream-chat";
+
+// The in-call Agent's realtime socket is held open by this function (see
+// `after` in call.session_started), so it needs the longest duration the
+// Vercel plan allows. 300s is the Hobby ceiling; raise it on Pro.
+export const maxDuration = 300;
 
 // api key is defined inside automatically but we can explicitly define it too
 const openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -106,7 +111,27 @@ export async function POST(req: NextRequest) {
 
       realTimeClient.updateSession({
         instructions: existingAgent.instructions,
+        // Without turn detection the Agent never notices the user stopped
+        // speaking, so it never replies.
+        turn_detection: { type: "server_vad" },
       });
+
+      // The Agent's realtime socket lives in this function. On serverless
+      // hosts (Vercel) the function is frozen once the response is sent,
+      // which silently drops the Agent. Keep it alive until the socket closes
+      // or maxDuration is reached.
+      after(
+        () =>
+          new Promise<void>((resolve) => {
+            realTimeClient.on("close", (info) => {
+              console.warn(
+                `Agent ${existingAgent.id} realtime socket closed for meeting ${meetingId}:`,
+                info,
+              );
+              resolve();
+            });
+          }),
+      );
     } catch (error) {
       console.error("Error connecting OpenAI agent to call:", error);
     }

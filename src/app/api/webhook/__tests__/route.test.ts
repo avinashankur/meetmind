@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
+const mockAfter = vi.fn();
+vi.mock("next/server", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/server")>()),
+  after: (...args: unknown[]) => mockAfter(...args),
+}));
+
 const mockCallEnd = vi.fn().mockResolvedValue({});
 const mockCall = vi.fn().mockReturnValue({
   end: mockCallEnd,
@@ -195,8 +201,12 @@ describe("Webhook POST handler - call.session_participant_left", () => {
       .mockResolvedValueOnce([fakeAgent]);
 
     const mockUpdateSession = vi.fn();
+    const closeHandlers: Array<(info: unknown) => void> = [];
     mockConnectOpenAi.mockResolvedValue({
       updateSession: mockUpdateSession,
+      on: (event: string, cb: (info: unknown) => void) => {
+        if (event === "close") closeHandlers.push(cb);
+      },
     });
 
     const req = createRequest({
@@ -219,6 +229,22 @@ describe("Webhook POST handler - call.session_participant_left", () => {
     );
     expect(mockUpdateSession).toHaveBeenCalledWith({
       instructions: fakeAgent.instructions,
+      turn_detection: { type: "server_vad" },
     });
+
+    // The function is kept alive until the Agent's realtime socket closes.
+    expect(mockAfter).toHaveBeenCalledTimes(1);
+    const keepAlive = mockAfter.mock.calls[0][0] as () => Promise<void>;
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    let settled = false;
+    const pending = keepAlive().then(() => {
+      settled = true;
+    });
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    closeHandlers.forEach((cb) => cb({ error: false }));
+    await pending;
+    expect(settled).toBe(true);
+    warnSpy.mockRestore();
   });
 });

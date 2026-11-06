@@ -134,6 +134,8 @@ src/
 - **Ending the Call:** A call ends only when the host leaves or clicks hang-up. In the Stream webhook, `call.session_participant_left` checks whether the leaving participant matches `meeting.userId` before terminating the call.
 - **Agent Drops:** If the AI Agent disconnects, the server logs the drop reason and keeps the call running. The Agent leaving never ends a call.
 - **Other Participants:** A guest or attendee leaving never ends the call.
+- **Agent Connection Lifetime:** The Agent's realtime socket is opened inside the webhook function on `call.session_started`. The handler keeps the function alive with `after()` until that socket closes, bounded by the route's `maxDuration` (300s on Vercel Hobby). Removing this makes serverless hosts freeze the function and silently drop the Agent. Meetings longer than `maxDuration` lose the Agent; moving the Agent to a long-lived worker is the fix if that matters.
+- **Turn Detection:** The Agent session sets `turn_detection: { type: "server_vad" }`. Without it the Agent never replies.
 - **Client Hang-Up:** If the call is live, hang-up ends the call for everyone and transitions to the ended screen. If the call was already ended or left, hang-up skips SDK calls and immediately transitions to the ended screen without throwing.
 - **Page Unmount Cleanup:** Leaving or navigating away from the call page only leaves the call (`call.leave()`), and only if the user had joined and hasn't left yet. Cleanup never ends the call for everyone, preventing React development double-mount from ending meetings prematurely.
 
