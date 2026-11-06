@@ -6,7 +6,11 @@ import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { MeetingIdView, MeetingIdViewError, MeetingIdViewLoading } from "@/modules/meetings/ui/views/meeting-id-view";
+import {
+  MeetingIdView,
+  MeetingIdViewError,
+  MeetingIdViewLoading,
+} from "@/modules/meetings/ui/views/meeting-id-view";
 
 interface Props {
   params: Promise<{
@@ -30,10 +34,9 @@ export default async function MeetingIdPage({ params }: Props) {
     trpc.meetings.getOne.queryOptions({ id: meetingId }),
   );
 
-  // TODO: get meetings trascript
-
   return (
-    <div className="max-w-6xl mx-auto px-4 w-full mt-10">
+    // Same container as the navbar, so page and header edges line up.
+    <div className="mx-auto w-full max-w-6xl px-6 py-8 sm:px-16 sm:py-10">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<MeetingIdViewLoading />}>
           <ErrorBoundary fallback={<MeetingIdViewError />}>

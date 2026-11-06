@@ -1,33 +1,28 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { LoadingState } from "@/components/loading-state";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ChatUI } from "./chat-ui";
 
 interface Props {
   meetingId: string;
-  meetingName: string;
+  agentName: string;
 }
 
-export const ChatProvider = ({ meetingId, meetingName }: Props) => {
+export const ChatProvider = ({ meetingId, agentName }: Props) => {
   const { data, isPending } = authClient.useSession();
 
   if (isPending || !data?.user) {
-    return (
-      <LoadingState
-        title="Loading"
-        description="Please wait while we load the chat"
-      />
-    );
+    return <Skeleton className="h-[420px] w-full rounded-xl" />;
   }
 
   return (
     <ChatUI
       meetingId={meetingId}
-      meetingName={meetingName}
+      agentName={agentName}
       userId={data.user.id}
       userName={data.user.name}
-      userImage={data.user.image ?? ""}
+      userImage={data.user.image ?? undefined}
     />
   );
 };

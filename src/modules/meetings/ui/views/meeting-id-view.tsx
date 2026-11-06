@@ -1,21 +1,33 @@
 "use client";
 
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import Link from "next/link";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { ArrowLeftIcon, SearchXIcon } from "lucide-react";
+
 import { useTRPC } from "@/trpc/client";
-import { LoadingState } from "@/components/loading-state";
-import { ErrorState } from "@/components/error-state";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { MeetingStatus } from "../../types";
 import { MeetingIdHeader } from "../components/meeting-id-header";
-import { UpcomingState } from "../components/upcoming-state";
-import { ActiveState } from "../components/active-state";
-import { CancelledState } from "../components/cancelled-state";
-import { ProcessingState } from "../components/processing-state";
+import {
+  ActiveState,
+  CancelledState,
+  ProcessingState,
+  UpcomingState,
+} from "../components/meeting-states";
 import { CompletedState } from "../components/completed-state";
+import {
+  isTransitionalStatus,
+  MEETING_POLL_INTERVAL_MS,
+} from "../components/meeting-status-badge";
 
 interface Props {
   meetingId: string;
@@ -23,70 +35,71 @@ interface Props {
 
 export const MeetingIdView = ({ meetingId }: Props) => {
   const trpc = useTRPC();
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
-  const { data: meeting } = useSuspenseQuery(
-    trpc.meetings.getOne.queryOptions({ id: meetingId }),
-  );
-
-  const removeMeeting = useMutation(
-    trpc.meetings.remove.mutationOptions({
-      onSuccess: () => {
-        toast.success("Meeting deleted successfully");
-        queryClient.invalidateQueries(trpc.meetings.getMany.queryOptions({}));
-        router.push("/meetings");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }),
-  );
-
-  const isActive = meeting.status === "active";
-  const isCompleted = meeting.status === "completed";
-  const isProcessing = meeting.status === "processing";
-  const isUpcoming = meeting.status === "upcoming";
-  const isCancelled = meeting.status === "cancelled";
-
-  if (!meeting) return <MeetingIdViewError />;
+  const { data: meeting } = useSuspenseQuery({
+    ...trpc.meetings.getOne.queryOptions({ id: meetingId }),
+    // Picks up active → processing → completed without a reload.
+    refetchInterval: (query) =>
+      query.state.data && isTransitionalStatus(query.state.data.status)
+        ? MEETING_POLL_INTERVAL_MS
+        : false,
+  });
 
   return (
-    <>
-      <div className="mb-10">
-        <MeetingIdHeader
-          meetingId={meetingId}
-          data={meeting}
-          removeMeeting={removeMeeting}
-        />
-      </div>
+    <div className="flex min-w-0 flex-col gap-6">
+      <MeetingIdHeader data={meeting} />
 
-      {isActive && <ActiveState meetingId={meetingId} />}
-
-      {isCompleted && <CompletedState data={meeting} />}
-
-      {isProcessing && <ProcessingState />}
-
-      {isUpcoming && <UpcomingState meetingId={meetingId} />}
-
-      {isCancelled && <CancelledState />}
-    </>
-  );
-};
-
-export const MeetingIdViewLoading = () => {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <LoadingState title="Loading meeting details..." />
+      {meeting.status === MeetingStatus.Upcoming && (
+        <UpcomingState meetingId={meetingId} agentName={meeting.agent.name} />
+      )}
+      {meeting.status === MeetingStatus.Active && (
+        <ActiveState meetingId={meetingId} agentName={meeting.agent.name} />
+      )}
+      {meeting.status === MeetingStatus.Processing && <ProcessingState />}
+      {meeting.status === MeetingStatus.Completed && (
+        <CompletedState data={meeting} />
+      )}
+      {meeting.status === MeetingStatus.Cancelled && <CancelledState />}
     </div>
   );
 };
 
-export const MeetingIdViewError = () => {
-  return (
-    <ErrorState
-      title="Meeting not found"
-      description="The meeting you are looking for does not exist or has been deleted."
-    />
-  );
-};
+export const MeetingIdViewLoading = () => (
+  <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
+      <Skeleton className="h-4 w-40" />
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-64" />
+        <Skeleton className="h-3.5 w-80" />
+      </div>
+    </div>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Skeleton key={i} className="h-[74px] rounded-xl" />
+      ))}
+    </div>
+    <Skeleton className="h-[420px] w-full rounded-xl" />
+  </div>
+);
+
+export const MeetingIdViewError = () => (
+  <Empty className="border-border/50 bg-card min-h-[340px] border border-solid shadow-2xs">
+    <EmptyHeader>
+      <EmptyMedia variant="icon">
+        <SearchXIcon />
+      </EmptyMedia>
+      <EmptyTitle>Meeting not found</EmptyTitle>
+      <EmptyDescription>
+        It may have been deleted, or the link is wrong.
+      </EmptyDescription>
+    </EmptyHeader>
+    <EmptyContent>
+      <Button asChild variant="outline" size="sm">
+        <Link href="/meetings">
+          <ArrowLeftIcon data-icon="inline-start" />
+          Back to meetings
+        </Link>
+      </Button>
+    </EmptyContent>
+  </Empty>
+);

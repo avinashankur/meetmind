@@ -1,188 +1,123 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { MeetingGetOne } from "../../types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+"use client";
+
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import {
-  BookOpenCheckIcon,
-  SparklesIcon,
+  BookOpenTextIcon,
+  DownloadIcon,
   FileTextIcon,
   FileVideoIcon,
-  ClockFadingIcon,
+  MessageSquareTextIcon,
 } from "lucide-react";
-import GeneratedAvatar from "@/components/generated-avatar";
-import Link from "next/link";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { formatDuration } from "@/lib/utils";
-import Markdown from "react-markdown";
+
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { MeetingGetOne } from "../../types";
+import { MeetingSummary } from "./meeting-summary";
 import { Transcript } from "./transcript";
 import { ChatProvider } from "./chat-provider";
+
+const TABS = ["summary", "transcript", "recording", "chat"] as const;
+type Tab = (typeof TABS)[number];
 
 interface Props {
   data: MeetingGetOne;
 }
 
 export const CompletedState = ({ data }: Props) => {
+  const [tab, setTab] = useQueryState(
+    "tab",
+    parseAsStringLiteral(TABS)
+      .withDefault("summary")
+      .withOptions({ clearOnDefault: true }),
+  );
+
   return (
-    <div className="flex flex-col gap-y-4">
-      <Tabs defaultValue="summary">
-        <div className="rounded-lg bg-white px-3">
-          <ScrollArea>
-            <TabsList className="bg-background h-13 justify-center rounded-none p-0">
-              <TabsTrigger
-                value="summary"
-                className="text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-t-transparent data-[state=active]:shadow-none"
-              >
-                <BookOpenCheckIcon />
-                Summary
-              </TabsTrigger>
-              <TabsTrigger
-                value="transcript"
-                className="text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-t-transparent data-[state=active]:shadow-none"
-              >
-                <FileTextIcon />
-                Transcript
-              </TabsTrigger>
-              <TabsTrigger
-                value="recording"
-                className="text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-t-transparent data-[state=active]:shadow-none"
-              >
-                <FileVideoIcon />
-                Recording
-              </TabsTrigger>
-              <TabsTrigger
-                value="chat"
-                className="text-muted-foreground bg-background data-[state=active]:border-b-primary data-[state=active]:text-accent-foreground hover:text-accent-foreground h-full rounded-none border-b-2 border-t-transparent data-[state=active]:shadow-none"
-              >
-                <SparklesIcon />
-                Ask AI
-              </TabsTrigger>
-            </TabsList>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
-        <TabsContent value="chat">
-          <ChatProvider meetingId={data.id} meetingName={data.name} />
-        </TabsContent>
-        <TabsContent value="transcript">
-          <Transcript meetingId={data.id} />
-        </TabsContent>
+    <Tabs
+      value={tab}
+      onValueChange={(value) => setTab(value as Tab)}
+      className="border-border/50 bg-card min-w-0 gap-0 overflow-hidden rounded-xl border shadow-2xs"
+    >
+      <div className="border-border/50 bg-muted/40 overflow-x-auto border-b px-4">
+        <TabsList variant="line" className="h-11">
+          <TabsTrigger value="summary">
+            <BookOpenTextIcon />
+            Summary
+          </TabsTrigger>
+          <TabsTrigger value="transcript">
+            <FileTextIcon />
+            Transcript
+          </TabsTrigger>
+          <TabsTrigger value="recording">
+            <FileVideoIcon />
+            Recording
+          </TabsTrigger>
+          <TabsTrigger value="chat">
+            <MessageSquareTextIcon />
+            Ask AI
+          </TabsTrigger>
+        </TabsList>
+      </div>
 
-        <TabsContent value="recording">
-          <div className="rounded-lg border bg-white px-4 py-5">
-            <video
-              src={data.recordingUrl!}
-              className="w-full rounded-lg"
-              controls
-            />
-          </div>
-        </TabsContent>
-        <TabsContent value="summary">
-          <div className="rounded-lg border bg-white">
-            <div className="col-span-5 flex flex-col gap-y-5 px-4 py-5">
-              <h2 className="">{data.name}</h2>
-              <div className="flex items-center gap-x-2">
-                <Link
-                  href={`/agents/${data.agent.id}`}
-                  className="flex items-center gap-x-2 capitalize underline underline-offset-4"
-                >
-                  <GeneratedAvatar
-                    seed={data.agent.name}
-                    variant="botttsNeutral"
-                  />
-                  <p className="">{data.agent.name}</p>
-                </Link>
-                <p>{data.startedAt ? format(data.startedAt, "PPP") : ""}</p>
-              </div>
+      <TabsContent value="summary" className="min-w-0 p-5 sm:p-6">
+        <MeetingSummary summary={data.summary} />
+      </TabsContent>
+      <TabsContent value="transcript" className="min-w-0 p-5 sm:p-6">
+        <Transcript meetingId={data.id} />
+      </TabsContent>
+      <TabsContent value="recording" className="min-w-0 p-5 sm:p-6">
+        <Recording url={data.recordingUrl} name={data.name} />
+      </TabsContent>
+      <TabsContent value="chat" className="min-w-0">
+        <ChatProvider meetingId={data.id} agentName={data.agent.name} />
+      </TabsContent>
+    </Tabs>
+  );
+};
 
-              <div className="flex items-center gap-x-2">
-                <SparklesIcon />
-                <p>General Summary</p>
-              </div>
-              <Badge
-                variant="outline"
-                className="flex items-center gap-x-2 [&>svg]:size-4"
-              >
-                <ClockFadingIcon />
-                {data.duration ? formatDuration(data.duration) : "No duration"}
-              </Badge>
+const Recording = ({ url, name }: { url: string | null; name: string }) => {
+  if (!url) {
+    return (
+      <Empty className="min-h-[280px]">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <FileVideoIcon />
+          </EmptyMedia>
+          <EmptyTitle>No recording</EmptyTitle>
+          <EmptyDescription>
+            No recording is available for this meeting.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
-              <div>
-                <Markdown
-                  components={{
-                    h1: (props) => (
-                      <h1 className="mb-6 text-2xl font-medium" {...props} />
-                    ),
-                    h2: (props) => (
-                      <h2 className="mb-6 text-xl font-medium" {...props} />
-                    ),
-                    h3: (props) => (
-                      <h3 className="mb-6 text-lg font-medium" {...props} />
-                    ),
-                    h4: (props) => (
-                      <h4 className="text-md mb-2 font-medium" {...props} />
-                    ),
-                    h5: (props) => (
-                      <h5 className="mb-1 text-sm font-medium" {...props} />
-                    ),
-                    h6: (props) => (
-                      <h6 className="mb-1 text-xs font-medium" {...props} />
-                    ),
-                    p: (props) => (
-                      <p className="mb-6 leading-relaxed" {...props} />
-                    ),
-                    a: (props) => (
-                      <a className="text-blue-500 hover:underline" {...props} />
-                    ),
-                    code: (props) => (
-                      <code
-                        className="rounded bg-gray-100 px-1 py-1"
-                        {...props}
-                      />
-                    ),
-                    pre: (props) => (
-                      <pre className="rounded bg-gray-100 p-2" {...props} />
-                    ),
-                    blockquote: (props) => (
-                      <blockquote
-                        className="mb-6 border-l-2 border-gray-300 pl-4"
-                        {...props}
-                      />
-                    ),
-                    ul: (props) => (
-                      <ul className="mb-6 list-inside list-disc" {...props} />
-                    ),
-                    ol: (props) => (
-                      <ol
-                        className="mb-6 list-inside list-decimal"
-                        {...props}
-                      />
-                    ),
-                    li: (props) => <li className="mb-1" {...props} />,
-                    table: (props) => (
-                      <table className="mb-6 w-full" {...props} />
-                    ),
-                    thead: (props) => (
-                      <thead className="text-left" {...props} />
-                    ),
-                    tbody: (props) => <tbody {...props} />,
-                    tr: (props) => <tr {...props} />,
-                    th: (props) => <th className="px-4 py-2" {...props} />,
-                    td: (props) => <td className="px-4 py-2" {...props} />,
-                    strong: (props) => (
-                      <strong className="font-bold" {...props} />
-                    ),
-                    em: (props) => <em className="italic" {...props} />,
-                    del: (props) => <del className="line-through" {...props} />,
-                    ins: (props) => <ins className="underline" {...props} />,
-                  }}
-                >
-                  {data.summary}
-                </Markdown>
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+  return (
+    <div className="flex flex-col gap-3">
+      <video
+        src={url}
+        controls
+        preload="metadata"
+        className="aspect-video w-full rounded-lg bg-black"
+        aria-label={`Recording of ${name}`}
+      />
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-muted-foreground text-xs">
+          Recorded automatically during the call
+        </span>
+        <Button asChild variant="outline" size="sm">
+          <a href={url} target="_blank" rel="noreferrer" download>
+            <DownloadIcon data-icon="inline-start" />
+            Download
+          </a>
+        </Button>
+      </div>
     </div>
   );
 };

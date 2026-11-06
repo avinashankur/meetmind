@@ -1,86 +1,58 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { format, isThisYear, isToday, isYesterday } from "date-fns";
+
 import GeneratedAvatar from "@/components/generated-avatar";
-import {
-  CircleCheckIcon,
-  LoaderIcon,
-  CircleXIcon,
-  ClockArrowUpIcon,
-  VideoIcon,
-  Clock,
-  Calendar,
-  ArrowRight,
-} from "lucide-react";
-import { MeetingGetMany } from "../../types";
-import { format } from "date-fns";
-import { cn, formatDuration } from "@/lib/utils";
+import { formatDuration } from "@/lib/utils";
+import { MeetingGetMany, MeetingStatus } from "../../types";
+import { MeetingActions } from "./meeting-actions";
+import { MeetingStatusBadge } from "./meeting-status-badge";
 
-const statusIconMap = {
-  upcoming: ClockArrowUpIcon,
-  processing: LoaderIcon,
-  active: VideoIcon,
-  completed: CircleCheckIcon,
-  cancelled: CircleXIcon,
+type Meeting = MeetingGetMany[number];
+
+const formatMeetingDate = (value: string | Date) => {
+  const date = new Date(value);
+  const time = format(date, "h:mm a");
+
+  if (isToday(date)) return `Today, ${time}`;
+  if (isYesterday(date)) return `Yesterday, ${time}`;
+  return format(date, isThisYear(date) ? "MMM d, h:mm a" : "MMM d, yyyy");
 };
 
-const statusStyleMap: Record<
-  string,
-  {
-    className: string;
-    label: string;
+const DurationCell = ({ meeting }: { meeting: Meeting }) => {
+  if (meeting.status === MeetingStatus.Active) {
+    return <span className="text-brand text-xs font-medium">In progress</span>;
   }
-> = {
-  upcoming: {
-    className: "border-sky-500/25 bg-sky-500/10 text-sky-700 dark:text-sky-300",
-    label: "Upcoming",
-  },
-  processing: {
-    className:
-      "border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-    label: "Processing",
-  },
-  active: {
-    className: "border-brand/30 bg-brand/10 text-brand",
-    label: "Active",
-  },
-  completed: {
-    className:
-      "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-    label: "Completed",
-  },
-  cancelled: {
-    className:
-      "border-rose-500/25 bg-rose-500/10 text-rose-700 dark:text-rose-300",
-    label: "Cancelled",
-  },
+
+  if (typeof meeting.duration === "number" && meeting.duration > 0) {
+    return (
+      <span className="text-foreground font-mono text-xs tabular-nums">
+        {formatDuration(meeting.duration)}
+      </span>
+    );
+  }
+
+  return <span className="text-muted-foreground/60 text-xs">—</span>;
 };
 
-export const columns: ColumnDef<MeetingGetMany[number]>[] = [
+export const columns: ColumnDef<Meeting>[] = [
   {
     accessorKey: "name",
     header: "Meeting",
     cell: ({ row }) => (
-      <div className="flex flex-col gap-y-1 py-1">
-        <span className="text-foreground group-hover:text-primary text-sm font-medium tracking-tight transition-colors">
-          {row.original.name}
-        </span>
-
-        <div className="text-muted-foreground flex items-center gap-x-2 text-xs">
-          <div className="flex items-center gap-x-1.5">
-            <GeneratedAvatar
-              className="ring-border size-4 rounded-full ring-1"
-              seed={row.original.agent.name}
-              variant="botttsNeutral"
-            />
-            <span className="text-foreground/80 max-w-[140px] truncate sm:max-w-[200px]">
-              {row.original.agent.name}
-            </span>
-          </div>
-          <span>
-            {row.original.createdAt
-              ? format(new Date(row.original.createdAt), "MMM d, yyyy")
-              : ""}
+      <div className="flex min-w-0 items-center gap-3 py-0.5">
+        <GeneratedAvatar
+          className="size-8 shrink-0"
+          seed={row.original.agent.name}
+          variant="botttsNeutral"
+        />
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <span className="text-foreground truncate text-sm font-medium">
+            {row.original.name}
+          </span>
+          <span className="text-muted-foreground truncate text-xs">
+            {row.original.agent.name}
           </span>
         </div>
       </div>
@@ -89,70 +61,28 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => {
-      const statusKey = row.original.status as keyof typeof statusStyleMap;
-      const config = statusStyleMap[statusKey] ?? statusStyleMap.upcoming;
-      const Icon =
-        statusIconMap[statusKey as keyof typeof statusIconMap] ??
-        ClockArrowUpIcon;
-
-      return (
-        <div
-          className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
-            config.className,
-          )}
-        >
-          <Icon
-            className={cn(
-              "size-3 shrink-0",
-              row.original.status === "processing" && "animate-spin",
-            )}
-          />
-          <span>{config.label}</span>
-        </div>
-      );
-    },
+    cell: ({ row }) => <MeetingStatusBadge status={row.original.status} />,
   },
   {
     accessorKey: "duration",
     header: "Duration",
-    cell: ({ row }) => {
-      const hasDuration =
-        typeof row.original.duration === "number" && row.original.duration > 0;
-
-      return (
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <Clock className="text-muted-foreground/70 size-3.5 shrink-0" />
-          <span>
-            {hasDuration ? formatDuration(row.original.duration) : "--:--"}
-          </span>
-        </div>
-      );
-    },
+    cell: ({ row }) => <DurationCell meeting={row.original} />,
   },
   {
-    id: "timestamp",
+    id: "date",
     header: "Date",
-    cell: ({ row }) => {
-      const date = row.original.startedAt ?? row.original.createdAt;
-      return (
-        <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
-          <Calendar className="text-muted-foreground/70 size-3.5 shrink-0" />
-          <span>{date ? format(new Date(date), "HH:mm") : "--:--"}</span>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-xs whitespace-nowrap">
+        {formatMeetingDate(row.original.startedAt ?? row.original.createdAt)}
+      </span>
+    ),
   },
   {
     id: "actions",
-    header: "",
-    cell: () => (
-      <div className="flex items-center justify-end">
-        <div className="text-muted-foreground group-hover:text-primary inline-flex items-center gap-1 pr-1 text-xs transition-colors">
-          <span className="hidden sm:inline">Open</span>
-          <ArrowRight className="text-muted-foreground group-hover:text-brand size-3.5 transition-transform group-hover:translate-x-1" />
-        </div>
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <MeetingActions meeting={row.original} context="list" />
       </div>
     ),
   },

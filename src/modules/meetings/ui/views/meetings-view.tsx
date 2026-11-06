@@ -1,231 +1,166 @@
 "use client";
 
 import { useState } from "react";
-import { DataTable } from "@/components/data-table";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { columns } from "../components/columns";
 import { useRouter } from "next/navigation";
-import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
-import { DataPagination } from "@/components/data-pagination";
-import { NewMeetingDialog } from "../components/new-meeting-dialog";
-import { DEFAULT_PAGE } from "@/constants";
-import { Button } from "@/components/ui/button";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
+  AlertTriangleIcon,
   PlusIcon,
   RotateCcwIcon,
-  AlertTriangleIcon,
   SearchXIcon,
-  Loader2Icon,
+  VideoIcon,
 } from "lucide-react";
+
+import { useTRPC } from "@/trpc/client";
+import { DataTable } from "@/components/data-table";
+import { DataPagination } from "@/components/data-pagination";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { DEFAULT_PAGE } from "@/constants";
+import { columns } from "../components/columns";
+import { NewMeetingDialog } from "../components/new-meeting-dialog";
+import {
+  isTransitionalStatus,
+  MEETING_POLL_INTERVAL_MS,
+} from "../components/meeting-status-badge";
+import { useMeetingsFilter } from "../../hooks/use-meetings-filter";
 
 export const MeetingsView = () => {
   const trpc = useTRPC();
-  const [filters, setFilters] = useMeetingsFilter();
-  const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
   const router = useRouter();
+  const [filters, setFilters] = useMeetingsFilter();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const { data } = useSuspenseQuery(
-    trpc.meetings.getMany.queryOptions({ ...filters }),
-  );
+  const { data } = useSuspenseQuery({
+    ...trpc.meetings.getMany.queryOptions({ ...filters }),
+    // Live and processing meetings change on the server (webhooks, Inngest).
+    // Poll only while one is on screen so the status updates without a reload.
+    refetchInterval: (query) =>
+      query.state.data?.items.some((m) => isTransitionalStatus(m.status))
+        ? MEETING_POLL_INTERVAL_MS
+        : false,
+  });
 
   const isAnyFilterActive =
     Boolean(filters.search) ||
     Boolean(filters.status) ||
     Boolean(filters.agentId);
 
-  const onClearFilters = () => {
-    setFilters({
-      status: null,
-      agentId: "",
-      search: "",
-      page: DEFAULT_PAGE,
-    });
-  };
+  const onClearFilters = () =>
+    setFilters({ status: null, agentId: "", search: "", page: DEFAULT_PAGE });
+
+  if (data.items.length === 0) {
+    return (
+      <>
+        <NewMeetingDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+        <Empty className="border-border/50 bg-card border border-solid">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              {isAnyFilterActive ? <SearchXIcon /> : <VideoIcon />}
+            </EmptyMedia>
+            <EmptyTitle>
+              {isAnyFilterActive ? "No matching meetings" : "No meetings yet"}
+            </EmptyTitle>
+            <EmptyDescription>
+              {isAnyFilterActive
+                ? "Nothing matches these filters. Try a different search or reset the filters."
+                : "Create a meeting with one of your agents. Its recording, transcript and summary will show up here."}
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            {isAnyFilterActive ? (
+              <Button variant="outline" size="sm" onClick={onClearFilters}>
+                <RotateCcwIcon data-icon="inline-start" />
+                Reset filters
+              </Button>
+            ) : (
+              <Button size="sm" onClick={() => setIsCreateOpen(true)}>
+                <PlusIcon data-icon="inline-start" />
+                New meeting
+              </Button>
+            )}
+          </EmptyContent>
+        </Empty>
+      </>
+    );
+  }
 
   return (
-    <>
-      <NewMeetingDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+    <div className="flex flex-col gap-4">
+      <DataTable
+        data={data.items}
+        columns={columns}
+        showHeader
+        className="border-border/50 bg-card rounded-xl"
+        onRowClick={(row) => router.push(`/meetings/${row.id}`)}
+      />
 
-      {data.items.length > 0 ? (
-        <div className="space-y-4">
-          {/* Surface Plate */}
-          <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-xs backdrop-blur-sm">
-            {/* Top Bar */}
-            <div className="border-border bg-muted/20 flex items-center justify-between border-b px-5 py-3 text-xs">
-              <span className="text-primary font-medium">
-                All meetings ({data.total})
-              </span>
-            </div>
-
-            {/* Table */}
-            <DataTable
-              data={data.items}
-              columns={columns}
-              showHeader={true}
-              className="rounded-none border-0 bg-transparent"
-              onRowClick={(row) => router.push(`/meetings/${row.id}`)}
-            />
-          </div>
-
-          {/* Pagination Controls */}
-          {data.totalPages > 1 && (
-            <DataPagination
-              page={filters.page}
-              totalPages={data.totalPages}
-              onPageChange={(page) => setFilters({ page })}
-            />
-          )}
-        </div>
-      ) : isAnyFilterActive ? (
-        /* Empty State: No Matches */
-        <div className="border-border bg-card rounded-2xl border p-10 text-center shadow-xs backdrop-blur-sm sm:p-14">
-          <div className="bg-muted/60 border-border mx-auto flex size-12 items-center justify-center rounded-full border">
-            <SearchXIcon className="text-muted-foreground size-5" />
-          </div>
-
-          <h3 className="text-primary mt-4 text-lg font-medium tracking-tight">
-            No meetings match your filter
-          </h3>
-
-          <p className="text-secondary mx-auto mt-1 max-w-md text-xs sm:text-sm">
-            No meetings matched your search criteria. Try resetting your
-            filters.
-          </p>
-
-          <div className="mt-5">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onClearFilters}
-              className="border-border hover:bg-muted/80 h-9 gap-2 rounded-full px-4 text-xs"
-            >
-              <RotateCcwIcon className="size-3.5" />
-              <span>Reset filters</span>
-            </Button>
-          </div>
-        </div>
-      ) : (
-        /* Empty State: First Time */
-        <div className="border-border bg-card relative overflow-hidden rounded-2xl border p-8 text-center shadow-xs backdrop-blur-sm sm:p-14">
-          <div className="bg-brand/5 border-brand/20 relative mx-auto mb-5 flex size-16 items-center justify-center rounded-full border">
-            <svg
-              className="text-brand size-8"
-              viewBox="0 0 40 40"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <circle
-                cx="20"
-                cy="20"
-                r="16"
-                strokeDasharray="3 3"
-                opacity="0.6"
-              />
-              <circle cx="20" cy="20" r="10" opacity="0.8" />
-              <circle cx="20" cy="20" r="4" fill="currentColor" />
-            </svg>
-          </div>
-
-          <h2 className="text-primary text-xl font-medium tracking-tight sm:text-2xl">
-            No meetings yet
-          </h2>
-
-          <p className="text-secondary mx-auto mt-1.5 max-w-md text-xs sm:text-sm">
-            Schedule your first meeting with an AI agent to get automated
-            recordings, transcripts, and summaries.
-          </p>
-
-          <div className="mt-6 flex justify-center">
-            <Button
-              onClick={() => setIsCreateOpen(true)}
-              className="bg-primary text-primary-foreground flex h-9 items-center gap-2 rounded-md px-4 text-sm font-medium shadow-xs transition-all hover:opacity-90"
-            >
-              <PlusIcon className="size-4" />
-              <span>Create meeting</span>
-            </Button>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-export const MeetingsViewLoading = () => {
-  return (
-    <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-xs backdrop-blur-sm">
-      <div className="border-border bg-muted/20 flex items-center justify-between border-b px-5 py-3">
-        <div className="flex items-center gap-2">
-          <Loader2Icon className="text-muted-foreground size-3.5 animate-spin" />
-          <span className="text-muted-foreground text-xs font-medium">
-            Loading meetings...
-          </span>
-        </div>
-        <Skeleton className="bg-muted h-4 w-20 rounded-sm" />
-      </div>
-
-      <div className="bg-muted/40 border-border grid grid-cols-4 gap-4 border-b px-5 py-3">
-        <Skeleton className="bg-muted h-3 w-32 rounded-sm" />
-        <Skeleton className="bg-muted h-3 w-24 rounded-sm" />
-        <Skeleton className="bg-muted h-3 w-20 rounded-sm" />
-        <Skeleton className="bg-muted ml-auto h-3 w-16 rounded-sm" />
-      </div>
-
-      <div className="divide-border divide-y">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="space-y-2">
-              <Skeleton className="bg-muted h-4 w-48 rounded-sm sm:w-64" />
-              <div className="flex items-center gap-2">
-                <Skeleton className="bg-muted size-4 rounded-full" />
-                <Skeleton className="bg-muted h-3 w-24 rounded-sm" />
-                <Skeleton className="bg-muted h-3 w-16 rounded-sm" />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Skeleton className="bg-muted h-6 w-20 rounded-full" />
-              <Skeleton className="bg-muted hidden h-4 w-16 rounded-sm sm:block" />
-              <Skeleton className="bg-muted h-4 w-12 rounded-sm" />
-            </div>
-          </div>
-        ))}
+      <div className="flex items-center justify-between gap-4">
+        <span className="text-muted-foreground text-xs">
+          {data.total} {data.total === 1 ? "meeting" : "meetings"}
+        </span>
+        {data.totalPages > 1 && (
+          <DataPagination
+            page={filters.page}
+            totalPages={data.totalPages}
+            onPageChange={(page) => setFilters({ page })}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export const MeetingsViewError = () => {
-  return (
-    <div className="border-border bg-card rounded-2xl border p-8 text-center shadow-xs backdrop-blur-sm sm:p-12">
-      <div className="mx-auto flex size-12 items-center justify-center rounded-full border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400">
-        <AlertTriangleIcon className="size-5" />
-      </div>
-
-      <h3 className="text-primary mt-3 text-lg font-medium tracking-tight">
-        Something went wrong
-      </h3>
-
-      <p className="text-secondary mx-auto mt-1 max-w-md text-xs sm:text-sm">
-        Failed to load meetings. Please check your connection and try again.
-      </p>
-
-      <div className="mt-5">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.location.reload()}
-          className="border-border hover:bg-muted/80 h-9 gap-2 rounded-full px-4 text-xs"
-        >
-          <RotateCcwIcon className="size-3.5" />
-          <span>Retry</span>
-        </Button>
-      </div>
+export const MeetingsViewLoading = () => (
+  <div className="border-border/50 bg-card overflow-hidden rounded-xl border">
+    <div className="bg-muted/40 border-border flex gap-6 border-b px-4 py-3">
+      <Skeleton className="h-3 w-24" />
+      <Skeleton className="h-3 w-16" />
+      <Skeleton className="h-3 w-16" />
     </div>
-  );
-};
+    <div className="divide-border flex flex-col divide-y">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div key={index} className="flex items-center gap-3 px-4 py-3.5">
+          <Skeleton className="size-8 rounded-full" />
+          <div className="flex flex-1 flex-col gap-1.5">
+            <Skeleton className="h-3.5 w-48" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+          <Skeleton className="h-5 w-20 rounded-full" />
+          <Skeleton className="hidden h-3 w-12 sm:block" />
+          <Skeleton className="hidden h-3 w-24 sm:block" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+export const MeetingsViewError = () => (
+  <Empty className="border-border/50 bg-card border border-solid">
+    <EmptyHeader>
+      <EmptyMedia variant="icon">
+        <AlertTriangleIcon />
+      </EmptyMedia>
+      <EmptyTitle>Couldn&apos;t load meetings</EmptyTitle>
+      <EmptyDescription>Check your connection and try again.</EmptyDescription>
+    </EmptyHeader>
+    <EmptyContent>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => window.location.reload()}
+      >
+        <RotateCcwIcon data-icon="inline-start" />
+        Retry
+      </Button>
+    </EmptyContent>
+  </Empty>
+);
