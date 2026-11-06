@@ -37,7 +37,7 @@ export const meetingsRouter = createTRPCRouter({
 
     return token;
   }),
-  
+
   getTranscript: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -288,9 +288,12 @@ export const meetingsRouter = createTRPCRouter({
         .select({
           ...getTableColumns(meetings),
           agent: agents,
-          duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
-            "duration",
-          ),
+          // EXTRACT returns numeric, which the driver hands back as a string.
+          duration: sql<
+            number | null
+          >`EXTRACT(EPOCH FROM (ended_at - started_at))`
+            .mapWith((value) => (value == null ? null : Number(value)))
+            .as("duration"),
         })
         .from(meetings)
         .innerJoin(agents, eq(meetings.agentId, agents.id))
@@ -335,9 +338,12 @@ export const meetingsRouter = createTRPCRouter({
         .select({
           ...getTableColumns(meetings),
           agent: agents,
-          duration: sql<number>`EXTRACT(EPOCH FROM (ended_at - started_at))`.as(
-            "duration",
-          ),
+          // EXTRACT returns numeric, which the driver hands back as a string.
+          duration: sql<
+            number | null
+          >`EXTRACT(EPOCH FROM (ended_at - started_at))`
+            .mapWith((value) => (value == null ? null : Number(value)))
+            .as("duration"),
         })
         .from(meetings)
         .innerJoin(agents, eq(meetings.agentId, agents.id))
