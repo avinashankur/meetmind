@@ -85,7 +85,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/humanize-duration": "^3.27.4",
-    "@types/node": "^20",
+    "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-highlight-words": "^0.20.1",
