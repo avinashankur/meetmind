@@ -283,7 +283,7 @@ export async function POST(req: NextRequest) {
       Be concise, helpful, and focus on providing accurate information from the meeting and the ongoing conversation.
       `;
 
-      const channel = streamChat.channel("messagin", channelId);
+      const channel = streamChat.channel("messaging", channelId);
       await channel.watch();
 
       const previousMessages = channel.state.messages
