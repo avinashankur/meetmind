@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "packageVersion": "2.4.3",
+  "packageVersion": "2.5.0",
   "installedSkills": {
     "fronted-coding-standards": {
       "version": "2.4.3"
@@ -18,7 +18,7 @@
       "version": "2.4.3"
     },
     "issue-tracker-gh": {
-      "version": "2.4.3"
+      "version": "2.5.0"
     },
     "project-docs": {
       "version": "2.4.3"
