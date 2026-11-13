@@ -1,195 +1,174 @@
-# MeetMind Design System — Built for Intelligent Performance
+# MeetMind Design System
 
-## 1. Design Philosophy
+## 1. Overview
 
-**MeetMind** embodies an aesthetic of **industrial precision and editorial restraint**. Rather than generic dashboards, disconnected floating cards, or cluttered bento grids, the design is structured around a continuous paper canvas, tactile glass materials, high-precision telemetry, and an iconic **7-row LED-dot typographic matrix**.
+MeetMind has two visual surfaces built with the same toolchain (Tailwind CSS v4 + shadcn/ui):
 
-The design system merges the physical tactility of high-end acoustic instrumentation (Teenage Engineering, Dieter Rams, Braun) with modern web engineering:
-
-- **Rigid container scaling & responsive math** via CSS Container Queries (`cqw`).
-- **Tactile surface physics** using SVG `feTurbulence` noise textures and hardware-accelerated video/graphics backdrops.
-- **Strict vertical edge alignment** across all sections from header to footer.
-- **Semantic tokenization** with full Tailwind CSS v4 and dark/light mode parity.
-
-### Anti-Card-Fatigue Principle
-
-Rigid glass cards are strictly confined to the hero metric units (`Speed`, `Context`, `Connections`). All downstream sections intentionally avoid nested cards, card-within-card containers, or generic bento boxes. Instead, content flows directly on the continuous tactile canvas with open editorial typography, technical spec sheets, and crisp hairline rule dividers (`border-border`).
+| Surface                                                    | Look                                                                                                    | Colors come from                                                          |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------ |
+| **Application** (dashboard, auth, call)                    | Neutral, restrained SaaS UI with light/dark parity                                                      | shadcn semantic tokens in [`globals.css`](src/app/globals.css)            |
+| **Marketing landing page** (`/`, signed-out visitors only) | Light "sky" theme: blue gradient hero, clouds, white cards on a pale-blue canvas, blueprint frame lines | Tailwind's default palette (`slate`, `blue`, `sky`, `zinc`, `emerald`, …) |
 
 ---
 
-## 2. Global Semantic Tokens & Theme Architecture
+## 2. Styling Rules (All Surfaces)
 
-Colors are defined in [`src/app/globals.css`](file:///e:/dev/meetmind/src/app/globals.css) as CSS custom properties exposed to Tailwind CSS v4 via `@theme inline`. No arbitrary hex values (`[#...]`) are used in component class names.
+- **Write styles as standard Tailwind classes in `className`.** Compose variants with `cva` and merge with `cn()` from `@/lib/utils`.
+- **Use Tailwind's default scales and snap to the closest step.** This covers text size, spacing, radius, shadow, tracking and leading. Pixel-perfect values are not a goal: a 13px design value becomes `text-sm`, an 18px gap becomes `gap-4`, a 13px corner becomes `rounded-xl`.
+- **No arbitrary values** (`text-[13px]`, `rounded-[13px]`, `bg-[#0f1b33]`, `w-[clamp(...)]`). Express fluid sizes with responsive steps instead (`text-4xl md:text-5xl xl:text-6xl`).
+  - Accepted exceptions are things Tailwind has no utility for, such as `[writing-mode:vertical-rl]` for vertical tab labels, and shadcn-style selector variants (`data-[state=open]:`, `[&_svg]:size-4`). Comment each exception.
+- **Colors**: use semantic tokens (application) or the default Tailwind palette (landing). Any genuinely new color goes in `src/app/globals.css` and nowhere else; don't create per-module color tokens.
+- **`src/app/globals.css` is the only stylesheet.** Register `next/font` families as Tailwind utilities in its `@theme inline` block; never add per-module CSS files or hard-coded font stacks in components.
+- **Motion**: anything that moves, fades or scales uses the `motion` library with the shared tokens and components (see §4.5). Never hand-type durations or easing curves. Plain hover color changes stay as Tailwind `transition-colors duration-300`, since animating them in JS would duplicate palette values.
+- **Radii**: this repo derives `rounded-sm` (6px), `rounded-md` (8px), `rounded-lg` (10px) and `rounded-xl` (14px) from `--radius: 0.625rem`. `rounded-xs`, `2xl`, `3xl` and `4xl` keep Tailwind's defaults.
 
-### Theme Palette & Semantic Tokens
+### 2.1 Brand mark
 
-| CSS Variable           | Light Theme                | Dark Theme                  | Tailwind Utility                         | Semantic Purpose                                       |
-| :--------------------- | :------------------------- | :-------------------------- | :--------------------------------------- | :----------------------------------------------------- |
-| `--background`         | `#ececeb`                  | `#111111`                   | `bg-background`                          | Primary page & section background canvas               |
-| `--foreground`         | `#202020`                  | `#f4f4f4`                   | `text-foreground`                        | Base body text and default contrast                    |
-| `--primary`            | `#202020`                  | `#ffffff`                   | `text-primary`, `bg-primary`             | Primary headlines, strong emphasis, solid buttons      |
-| `--primary-foreground` | `#ffffff`                  | `#111111`                   | `text-primary-foreground`                | Inverted text on primary backgrounds                   |
-| `--secondary`          | `#4a4a4a`                  | `#a1a1aa`                   | `text-secondary`                         | Subheadings, editorial descriptions, secondary actions |
-| `--brand`              | `#ad314d`                  | `#ad314d`                   | `text-brand`, `bg-brand`, `border-brand` | Brand crimson identity, LED matrix, active indicators  |
-| `--brand-foreground`   | `#ffffff`                  | `#ffffff`                   | `text-brand-foreground`                  | Text on brand elements                                 |
-| `--accent`             | `#dededc`                  | `#222222`                   | `bg-accent`, `text-accent-foreground`    | Soft neutral hover/focus highlights on UI items        |
-| `--accent-foreground`  | `#202020`                  | `#f4f4f4`                   | `text-accent-foreground`                 | Text on hover/focus highlight surfaces                 |
-| `--muted`              | `#e4e4e3`                  | `#1c1c1c`                   | `bg-muted`                               | Skeleton loaders, subtle chip fills                    |
-| `--muted-foreground`   | `#4a4a4a`                  | `#a1a1aa`                   | `text-muted-foreground`                  | Microcopy, metadata labels                             |
-| `--border`             | `rgba(34, 34, 34, 0.1)`    | `rgba(255, 255, 255, 0.1)`  | `border-border`                          | Hairline dividers and surface borders                  |
-| `--card`               | `rgba(255, 255, 255, 0.7)` | `rgba(255, 255, 255, 0.03)` | `bg-card`                                | Surface plates with backdrop blur (`backdrop-blur-sm`) |
+One logo exists for every surface: a white four-point sparkle on a `blue-400 → blue-600` gradient tile, with a 25% corner radius.
 
-### Dark Mode Atmosphere
+| Where                           | What it is                                                                                                                           |
+| :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/brand/logo.tsx` | Source of truth. Exports `LogoMark` (icon), `LogoWordmark` (text), `Logo` (mark + wordmark) and `BrandLogo` (the home link).         |
+| `public/logo.svg`               | Static copy of the mark for external use (email, social, downloads).                                                                 |
+| `src/app/icon.svg`              | Favicon, rendered by the Next.js metadata file convention.                                                                           |
+| `src/app/apple-icon.png`        | 180×180 iOS icon, rasterised from `icon.svg` with full-bleed corners (iOS applies its own mask). Re-generate it if the mark changes. |
 
-- **Light Mode**: Textured warm paper (`#ececeb`) with tactile paper grain linear gradient overlays.
-- **Dark Mode**: Deep carbon `#111111` with subtle crimson atmospheric radial glows (`radial-gradient(ellipse 80% 50% at 50% -10%, rgba(173, 49, 77, 0.14), transparent 70%)`) and carbon gradients (`linear-gradient(180deg, #131313 0%, #111111 60%, #0e0e0e 100%)`).
-
----
-
-## 3. Container & Edge Alignment Architecture
-
-To prevent visual drift and misalignment, **every single section across the entire platform** adheres to an identical container definition:
-
-```tsx
-<div className="mx-auto w-full max-w-6xl px-6 sm:px-16">
-  {/* Content strictly aligns to the inner padding boundary */}
-</div>
-```
-
-### Layout Specifications
-
-- **Max Container Width**: `max-w-6xl` (`72rem` = `1152px`).
-- **Mobile Horizontal Padding**: `px-6` (`24px`) on screens `< 640px`.
-- **Desktop Horizontal Padding**: `sm:px-16` (`64px`) on screens `≥ 640px`.
-- **Inner Content Width at Desktop**: `1152px - 128px = 1024px`.
-- **Left Edge Alignment**: The MeetMind brand logo in the floating header, the "Built for..." hero headline, Card 1 (`SpeedCard`), all section mastheads, and the footer logo align to the **exact same vertical left guide line**.
-- **Right Edge Alignment**: The "Get Started" header CTA button, hero intro paragraph, Card 3 (`ConnectionsCard`), and footer legal links terminate on the **exact same vertical right guide line**.
+- Never add a second logo component or import React components from `public/`.
+- `--brand` is the mark's `blue-600` stop (`#2563eb`), so links, active nav and status chips match the tile.
+- The landing's `brand-logo.tsx` keeps only `SparkleTile` (mark at `xs`/`sm`/`lg` for inline use in copy) and a `BrandLogo` wrapper that applies the landing's `font-tight` wordmark.
+- Keep the mark legible at 16px: the sparkle is a single solid path with no fine inner detail.
 
 ---
 
-## 4. Typography System
+## 3. Application Theme Tokens
 
-### Font Stack
+Colors are CSS custom properties in [`src/app/globals.css`](src/app/globals.css), exposed to Tailwind via `@theme inline`.
 
-- **Primary Sans**: `"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
-  - Rendered with `font-optical-sizing: auto;`, `-webkit-font-smoothing: antialiased;`, `text-rendering: geometricPrecision;`.
-  - Display headlines use `text-3xl sm:text-5xl` with tight line-height (`leading-tight`) and tracking (`tracking-tight`).
-  - Editorial body text uses `text-xs sm:text-sm` with `leading-relaxed` and `font-normal`.
-- **Monospace Telemetry**: `"JetBrains Mono", ui-monospace, monospace` (`font-mono`)
-  - Used for telemetry metrics, status tags, latency indicators, timestamps, and section badges.
-  - Standard scale: `text-xs` (`12px`) with `tracking-wider` and `uppercase`.
+| CSS Variable           | Light                    | Dark                        | Utility                                  | Purpose                                                       |
+| :--------------------- | :----------------------- | :-------------------------- | :--------------------------------------- | :------------------------------------------------------------ |
+| `--background`         | `#fafafa`                | `#121213`                   | `bg-background`                          | Main dashboard canvas                                         |
+| `--foreground`         | `#202020`                | `#f4f4f4`                   | `text-foreground`                        | Base text                                                     |
+| `--card`               | `#ffffff`                | `#18181a`                   | `bg-card`                                | Elevated surfaces                                             |
+| `--primary`            | `#202020`                | `#ffffff`                   | `bg-primary`, `text-primary`             | Headlines, solid buttons                                      |
+| `--primary-foreground` | `#ffffff`                | `#111111`                   | `text-primary-foreground`                | Text on primary                                               |
+| `--secondary`          | `#4a4a4a`                | `#a1a1aa`                   | `text-secondary`                         | Subheadings, secondary copy                                   |
+| `--muted`              | `#f2f2f1`                | `#1c1c1f`                   | `bg-muted`                               | Skeletons, subtle fills                                       |
+| `--muted-foreground`   | `#4a4a4a`                | `#a1a1aa`                   | `text-muted-foreground`                  | Microcopy, metadata                                           |
+| `--accent`             | `#ebebeb`                | `#222225`                   | `bg-accent`                              | Neutral hover/focus highlight on menu items                   |
+| `--brand`              | `#2563eb`                | `#2563eb`                   | `text-brand`, `bg-brand`, `border-brand` | Brand blue, matching the logo mark (never used as `--accent`) |
+| `--border`             | `rgba(34, 34, 34, 0.08)` | `rgba(255, 255, 255, 0.08)` | `border-border`                          | Hairline dividers                                             |
+| `--sidebar`            | `#f5f5f4`                | `#0b0b0c`                   | `bg-sidebar`                             | Recessed navigation column                                    |
 
-### LED-Dot Matrix Display Glyphs
-
-The LED-dot typography engine ([`led-dots.tsx`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/led-dots.tsx)) renders 7-row vector matrix characters:
-
-- **Brand Title Term**: Crimson `Intelligent` in the hero headline (`text-accent`).
-- **Performance Numerals**: Card metrics like `184 ms` (latency), `100 %` (overview accuracy), and `50 +` (concurrent agents).
-- **Matrix Calculations**: Pitch X = 4 (words) or 5 (metrics), Pitch Y = 4, Gap = 1, rendered into crisp scalable vector paths.
-
----
-
-## 5. Hero Glass Cards & Micro-Scaling Engine
-
-The three hero performance cards ([`performance-cards.tsx`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/performance-cards.tsx)) represent physical instruments:
-
-### Proportions & Container Queries
-
-- **Reference Aspect Ratio**: `429 / 554` (`aspect-ratio: 429 / 554`).
-- **Container Unit (`--u`)**: `calc(100cqw / 429)`. All internal fonts, margins, radar ticks, and button heights scale with `--u`.
-- **Card Radius**: `calc(var(--card-w) * 17 / 429)`.
-- **Row Scaling**: Cards fill the container with `display: flex; justify-content: space-between; gap: var(--gap)` where `--card-w: calc((100% - (var(--card-count) - 1) * var(--gap)) / var(--card-count))`. At full desktop expansion (`1024px`), each card settles at ~`329px` wide × ~`425px` tall.
-
-### Multi-Layer Optical Materials
-
-- **Speed Card**: Rose / Ruby / Wine radial gradients (`#bd4468` to `#8c1320`), mathematical radar gauge with 23 calibrated angle ticks, and real-time cadence readouts.
-- **Context Card**: Orchid / Amethyst / Berry gradients (`#c9b5e1` to `#793246`), glass window lines tile with backdrop blur.
-- **Connections Card**: Coral / Tangerine / Crimson gradients (`#d84736` to `#d34239`), masked vector connection circuit map.
-- **Surface Texture**: SVG `feTurbulence` fractal noise filter (`#cardNoise`, `baseFrequency="0.54"`, 3 octaves) blended with `mix-blend-mode: soft-light` at `46%` to `68%` opacity.
+**Fonts** (root layout, `next/font`): Inter is the body face (`--font-inter`). Plus Jakarta Sans is `font-sans`, JetBrains Mono `font-mono` and Instrument Serif `font-serif`; Bricolage Grotesque, Newsreader and Arbutus Slab are also available.
 
 ---
 
-## 6. Section Architecture
+## 4. Landing Page
 
-The landing page ([`home-view.tsx`](file:///e:/dev/meetmind/src/modules/home/lander/ui/views/home-view.tsx)) is sequenced into 8 cohesive stages:
+### 4.1 Structure
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ 0. HeaderLanding (Absolute navigation, Logo, Auth CTAs)     │
-├─────────────────────────────────────────────────────────────┤
-│ 1. PerformanceStage (Hero headline, 3 Glass Cards, LedDots) │
-├─────────────────────────────────────────────────────────────┤
-│ 2. StageVoiceEngine (Acoustic oscilloscope, VU meters)     │
-├─────────────────────────────────────────────────────────────┤
-│ 3. StageSynthesis (Diarization, 3-column markdown ledger)   │
-├─────────────────────────────────────────────────────────────┤
-│ 4. StageMemory (Search prompt terminal, Ask AI citations)   │
-├─────────────────────────────────────────────────────────────┤
-│ 5. StageSecurityFaq (Cryptographic disclosure ledger & FAQ) │
-├─────────────────────────────────────────────────────────────┤
-│ 6. StageCta (Final activation prompt, enterprise launch)    │
-├─────────────────────────────────────────────────────────────┤
-│ 7. FooterLanding (Navigation, legal links, ThemeToggle)     │
-└─────────────────────────────────────────────────────────────┘
+src/modules/home/lander/
+├── constants.ts                  # All copy and mock data. Edit wording here, not in components.
+└── ui/
+    ├── fonts.ts                  # Landing-only fonts, scoped to the landing root
+    ├── views/home-view.tsx       # Composes the sections
+    └── components/
+        ├── header.tsx, footer.tsx, cta-section.tsx
+        ├── landing-button.tsx    # cva: glass | dark | ghost | link × sm | md | lg
+        ├── brand-logo.tsx        # SparkleTile (xs | sm | lg) + landing BrandLogo wrapper
+        ├── frame-guides.tsx      # FrameWrap, FrameEdges, FrameDivider, Crosshair
+        ├── section-header.tsx    # SectionHeader, TitleAccent, SectionAsideCopy
+        ├── avatar-stack.tsx
+        ├── hero/                 # HeroSection, HeroCopy, DeckCard + 3 product cards
+        ├── about/                # AboutSection + image, quote and stats tiles
+        ├── features/             # FeaturesSection bento: BentoTile + one file per tile
+        ├── how-it-works/         # StepAccordion (client) + PreviewWindow mockups
+        └── testimonials/         # TestimonialsSection, TestimonialCard
 ```
 
-### Detailed Component Inventory
+**Server and client components.** Everything is a server component except `StepAccordion`. Its preview mockups are rendered on the server and passed in as props.
 
-1. **[`HeaderLanding`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/header.tsx)**:
-   - Floating navigation bar with transparent background and seamless vertical clearance.
-   - Left: MeetMind Logo with hover scale and brand typography.
-   - Right: "Sign In" link and rounded primary "Get Started" button.
+**Page order**: header → hero → about → features → how it works → testimonials → CTA → footer.
 
-2. **[`PerformanceStage`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/performance-stage.tsx)**:
-   - Two-line display masthead with animated LED-dot `Intelligent`.
-   - Three instrument cards (`SpeedCard`, `ContextCard`, `ConnectionsCard`).
-   - Downward telemetry scroll indicator linking directly to `#voice-engine`.
+### 4.2 Typography
 
-3. **[`StageVoiceEngine`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/stage-voice-engine.tsx)**:
-   - Section masthead: `01 // ARCHITECTURE & ACOUSTIC TELEMETRY`.
-   - Real-time animated SVG dual oscilloscope waveform with center latency marker (`184ms gap`).
-   - Dual analog VU decibel level meters with live randomized amplitude needles and peak indicators.
-   - 3-point telemetry spec ledger (`184ms Latency`, `0 Bot Invites Required`, `48kHz Opus Audio`).
+The root layout supplies Inter, the body face. [`fonts.ts`](src/modules/home/lander/ui/fonts.ts) loads the other faces only on the landing page, and the `@theme inline` block in [`globals.css`](src/app/globals.css) registers them as utilities:
 
-4. **[`StageSynthesis`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/stage-synthesis.tsx)**:
-   - Section masthead: `02 // AUTOMATED MEETING SYNTHESIS`.
-   - Live session metadata bar with Inngest engine attribution and GPT-4o model badge.
-   - 3-column deliverable ledger:
-     - _Column 1_: Narrative Executive Overview with database persistence badge.
-     - _Column 2_: Thematic Notes & Action Items with interactive checkable task items.
-     - _Column 3_: Decisions & Architectural Consensus with confidence scores.
+| Utility         | Face                        | Use                                          |
+| :-------------- | :-------------------------- | :------------------------------------------- |
+| `font-tight`    | Inter Tight                 | Headings, titles, card labels                |
+| `font-playfair` | Playfair Display italic 500 | Accent words in headings, section labels     |
+| `font-serif`    | Instrument Serif            | The `< 30s` display metric                   |
+| `font-dm-mono`  | DM Mono                     | Uppercase kickers, timestamps, mockup labels |
+| `font-hand`     | Caveat                      | The handwritten hero annotation              |
 
-5. **[`StageMemory`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/stage-memory.tsx)**:
-   - Section masthead: `03 // MEETING MEMORY & RECALL`.
-   - Interactive command terminal with blinking cursor (`>`) and preset query pills (`Budget & Finance`, `Sprint Architecture`, `Enterprise Sales`).
-   - Citation card with verbatim quote, audio timecode provenance, speaker attribution, and verification checks.
+Sizes use the default scale only. The floor is `text-xs`, including in the decorative product mockups. Common patterns:
 
-6. **[`StageSecurityFaq`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/stage-security-faq.tsx)**:
-   - Section masthead: `04 // CRYPTOGRAPHIC DEFENSE & TECHNICAL DISCLOSURES`.
-   - 3-stat technical security header (`Zero Model Training`, `AES-256 GCM`, `SOC2 Type II Ready`).
-   - Two-column interactive disclosure deck: category selection pills on the left, verified technical disclosure with standard certifications on the right.
+| Element               | Classes                                                           |
+| :-------------------- | :---------------------------------------------------------------- |
+| Hero headline         | `text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl`        |
+| Section title         | `text-4xl md:text-5xl xl:text-6xl leading-tight tracking-tighter` |
+| Step / feature titles | `text-4xl xl:text-5xl` / `text-2xl lg:text-3xl`                   |
+| Body / aside copy     | `text-sm` / `text-base leading-relaxed`                           |
+| Mono kicker           | `font-dm-mono text-xs tracking-widest uppercase`                  |
 
-7. **[`StageCta`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/stage-cta.tsx)**:
-   - High-contrast, focused conversion banner with live agent deployment badge.
-   - Centered headline and dual CTA actions ("Get Started Free" and "Architecture Overview").
+**Accent words** in headings use `TitleAccent` (`font-playfair font-medium italic text-blue-600`). Pass `text-white` on the blue backgrounds.
 
-8. **[`FooterLanding`](file:///e:/dev/meetmind/src/modules/home/lander/ui/components/footer.tsx)**:
-   - Multi-column footer with brand summary, Architecture anchor links, Workspace links, copyright statement, and integrated theme toggle.
+### 4.3 Color
+
+The landing uses the default Tailwind palette, with no custom color tokens:
+
+| Role                  | Classes                                                         |
+| :-------------------- | :-------------------------------------------------------------- |
+| Headings / dark tiles | `text-slate-900`, `bg-slate-900`                                |
+| Body / muted text     | `text-slate-600`, `text-slate-500`, `text-slate-400`            |
+| Accent                | `text-blue-600`, `bg-blue-600`                                  |
+| Page canvas           | `bg-blue-50`                                                    |
+| Cards / borders       | `bg-white`, `bg-slate-50`, `border-slate-200`                   |
+| Hero sky              | `bg-linear-to-b from-blue-500 via-blue-300 via-70% to-blue-200` |
+| CTA sky               | `bg-linear-to-b from-blue-500 via-blue-400 via-70% to-blue-300` |
+| Frame guides          | `border-blue-900/15` (lines), `bg-blue-900/50` (crosshairs)     |
+| Hero cards            | `bg-sky-100` behind the card image                              |
+
+### 4.4 Layout
+
+- **Frame**: all content sits in `FrameWrap`, a `max-w-6xl` column with `px-7`, inset from the viewport by `px-3.5 md:px-6`. `FrameEdges` draws the hairline guides as a `border-x` on the same box, so guides and content always line up. `FrameDivider` is a full-bleed rule with crosshairs at the frame edges.
+- **Breakpoints**: `md` switches the header and hero details. `lg` collapses grids to one column, stacks section headers and turns the step accordion into a vertical disclosure list.
+- **Rhythm**: sections use `py-20 lg:py-32`, section headers `mb-11`, grid gaps `gap-4`, and cards `rounded-2xl` or `rounded-3xl`.
+- **Hero deck**: the three cards are bottom-anchored (`-bottom-60 xl:-bottom-48`) and fanned out with `translate-x-3/4` and `rotate-6`. They sit between the rear and front cloud banks via `z-20`/`z-30`/`z-40`.
+- **Step accordion**: collapsed steps are `lg:basis-22 lg:grow-0`. The open step animates to `lg:grow`, and steps open on hover on hover-capable desktops. Click stays available for touch and keyboard users.
+
+### 4.5 Motion
+
+All animation uses [`motion`](https://motion.dev) (`motion/react`). Everything lives in `ui/components/motion/`, so the page moves with one rhythm:
+
+| File                                                   | What it provides                                                                                                                                                                                                                      |
+| :----------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `transitions.ts`                                       | `EASE` (`out`, `inOut`, `standard`), `DURATION` (`fast` 0.25s, `base` 0.5s, `slow` 0.8s), `TRANSITION` presets (`fast`, `base`, `slow`, `expand`, `pop`, `hover`), and the `ambientLoop()` / `pulseLoop()` helpers for endless motion |
+| `variants.ts`                                          | Entrance variants (`fadeUp`, `pop`, `stagger()`) and hover variants (`lift`, `zoom`, `shine`, `nudgeX`, `nudgeY`)                                                                                                                     |
+| `reveal.tsx`                                           | `Reveal`, `RevealGroup`, `RevealItem`: scroll-triggered (or `immediate`) fade-up entrances                                                                                                                                            |
+| `hover.tsx`                                            | `MotionLink` (hover/press-aware `next/link`), `HoverGroup`, `NudgeOnHover`, `ZoomOnHover`, `ShineOnHover`                                                                                                                             |
+| `count-up.tsx`, `typewriter.tsx`, `drifting-cloud.tsx` | Number count-up, typing text and `Caret`, and ambient drifting clouds                                                                                                                                                                 |
+| `landing-motion-provider.tsx`                          | `MotionConfig reducedMotion="user"` around the page                                                                                                                                                                                   |
+
+**Hover pattern.** A parent sets `initial="rest" whileHover="hover"` (`MotionLink`, `HoverGroup` and `BentoTile` all do), and any descendant using a hover variant reacts automatically, with no state. For example, `<MotionLink>Try it <NudgeOnHover><ArrowRight /></NudgeOnHover></MotionLink>`. `LandingButton` adds `ShineOnHover` (a light sweep) to its glass and dark variants automatically, so wrap a `MotionLink` with `asChild` and the shine plays on hover.
+
+**Choosing a transition.** Use `fast` for small state changes, `base` for content appearing, `slow` for section reveals, `expand` for panels changing size, `pop` for chips and tags, and `hover` for lifts and presses. Looping ambient motion (clouds, caret, waveform) uses `ambientLoop`, and pulses (voice rings) use `pulseLoop`.
+
+### 4.6 Accessibility
+
+- Decorative layers are `aria-hidden`: clouds, frame guides, the hero card deck, the preview mockups and the testimonial arrows.
+- Accordion tabs are buttons with `aria-expanded` and `aria-controls`, and each panel is a labelled `region`. Prev/next buttons have `aria-label`s.
+- Buttons have an explicit `focus-visible` outline; links keep the browser default focus ring (never remove it).
+
+### 4.7 Dark Mode
+
+The landing page is light-only for now. Dark mode is deferred.
 
 ---
 
-## 7. Responsive Breakpoint Strategy
-
-| Breakpoint                    | Viewport          | Layout Adaptations                                                                                                                                                                                   |
-| :---------------------------- | :---------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Mobile (`< 640px`)**        | `< 640px`         | `px-6` padding (24px). Mastheads stack vertically (`flex-col`). Performance cards stack in 1 column (`max-w-[360px]`). VU decibel meters hide detailed ticks. Deliverable ledger stacks in 1 column. |
-| **Tablet (`640px - 1023px`)** | `640px - 1023px`  | `sm:px-16` padding (64px). Mastheads switch to row layout (`sm:flex-row`). Deliverables switch to 3 columns. Portrait mode organizes cards into a 2+1 grid.                                          |
-| **Desktop (`≥ 1024px`)**      | `1024px - 1440px` | `max-w-6xl` centered (`1024px` content). All 3 hero cards in 1 row (`flex justify-between`). Security deck displays side-by-side 5-col / 7-col layout.                                               |
-| **Ultrawide (`> 1440px`)**    | `> 1440px`        | Content stays rigidly constrained to `max-w-6xl` centered canvas (`margin-inline: auto`). Dark mode radial ambient glow broadens smoothly without clipping.                                          |
-
----
-
-## 8. Dashboard & Application UI Principles
+## 5. Dashboard & Application UI Principles
 
 To ensure an enterprise-grade user experience and maintain visual restraint across dashboard modules, all interface implementations must adhere to the following rules:
 
@@ -223,7 +202,7 @@ To ensure an enterprise-grade user experience and maintain visual restraint acro
 - **Structural Groups**: Items must always be rendered within their parent group container (e.g. `SelectItem` inside `SelectGroup`, `DropdownMenuItem` inside `DropdownMenuGroup`).
 - **Accessible Overlays**: Overlay components (`Dialog`, `Sheet`, `Drawer`) must always include accessible `DialogHeader`, `DialogTitle`, and `DialogDescription` directly inside `DialogContent`. Use `className="sr-only"` when visually hidden.
 - **Semantic Theme Tokens**: All styles must use project semantic color tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-card`) without hardcoded arbitrary hex values.
-- **Decoupling Brand Identity from UI Accent**: The brand crimson color is encapsulated strictly within `--brand` (`text-brand`, `bg-brand`, `border-brand`). The shadcn `--accent` token is reserved exclusively for soft neutral hover/focus highlight states on dropdown items (`SelectItem`), menus, and ghost buttons (`bg-accent`, `text-accent-foreground`). Never assign bold brand colors to `--accent` to prevent harsh hover overlays on standard controls.
+- **Decoupling Brand Identity from UI Accent**: The brand blue is encapsulated strictly within `--brand` (`text-brand`, `bg-brand`, `border-brand`). The shadcn `--accent` token is reserved exclusively for soft neutral hover/focus highlight states on dropdown items (`SelectItem`), menus, and ghost buttons (`bg-accent`, `text-accent-foreground`). Never assign bold brand colors to `--accent` to prevent harsh hover overlays on standard controls.
 
 ### 6. Action Menus & Popover Overlays (Three-Dot Menu Specification)
 

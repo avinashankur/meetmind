@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { auth } from "@/lib/auth";
 import { HomeView } from "@/modules/home/lander/ui/views/home-view";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+
+export const metadata: Metadata = {
+  title: "MeetMind | Create Custom AI Agents That Join Your Video Calls",
+  description:
+    "Build custom AI agents with your own prompts and guidelines. Send them into video calls to follow your instructions and answer questions in chat.",
+};
 
 export default async function LandingPage() {
   const session = await auth.api.getSession({
@@ -11,9 +19,6 @@ export default async function LandingPage() {
   if (session) {
     redirect("/meetings");
   }
-  return (
-    <main className="">
-      <HomeView />
-    </main>
-  );
+
+  return <HomeView />;
 }

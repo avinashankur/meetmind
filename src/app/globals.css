@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../modules/home/lander/ui/stage.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -11,6 +10,11 @@
   --font-serif: var(--font-serif), "Instrument Serif", Georgia, serif;
   --font-newsreader: var(--font-newsreader), serif;
   --font-accent: var(--font-accent), serif;
+  /* Landing faces: loaded only by the landing root (lander/ui/fonts.ts). */
+  --font-tight: var(--lp-font-tight), "Inter Tight", sans-serif;
+  --font-playfair: var(--lp-font-playfair), "Playfair Display", Georgia, serif;
+  --font-hand: var(--lp-font-hand), "Caveat", cursive;
+  --font-dm-mono: var(--lp-font-mono), "DM Mono", monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -68,7 +72,7 @@
   --secondary-foreground: #ffffff;
   --muted: #f2f2f1;
   --muted-foreground: #4a4a4a;
-  --brand: #ad314d;
+  --brand: #2563eb;
   --brand-foreground: #ffffff;
   --accent: #ebebeb;
   --accent-foreground: #202020;
@@ -105,7 +109,7 @@
   --secondary-foreground: #ffffff;
   --muted: #1c1c1f;
   --muted-foreground: #a1a1aa;
-  --brand: #ad314d;
+  --brand: #2563eb;
   --brand-foreground: #ffffff;
   --accent: #222225;
   --accent-foreground: #f4f4f4;
