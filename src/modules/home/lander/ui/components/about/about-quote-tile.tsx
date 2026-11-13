@@ -18,7 +18,7 @@ export const AboutQuoteTile = () => (
       </em>
     </blockquote>
 
-    <figcaption className="flex items-center justify-between gap-4 border-t border-slate-200 pt-5">
+    <figcaption className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-5">
       <div className="flex items-center gap-3">
         <span className="grid size-10 place-items-center rounded-full bg-linear-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white">
           {ABOUT_QUOTE.initials}

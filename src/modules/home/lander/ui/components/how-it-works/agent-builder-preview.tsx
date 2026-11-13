@@ -61,7 +61,7 @@ export const AgentBuilderPreview = () => {
         ))}
       </motion.ul>
 
-      <GlassPanel className="mt-auto flex items-center gap-2.5 px-3 py-2.5">
+      <GlassPanel className="mt-auto flex flex-wrap items-center gap-2.5 px-3 py-2.5">
         <span className="grid size-8 flex-none place-items-center rounded-lg bg-blue-50 text-blue-600">
           <CalendarDays className="size-4" />
         </span>

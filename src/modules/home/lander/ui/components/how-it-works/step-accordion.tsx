@@ -76,7 +76,7 @@ const StepContent = memo(function StepContent({
   story: ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-6 px-5 pt-1 pb-6 lg:h-full lg:grid-cols-2 lg:gap-10 lg:py-8 lg:pr-8 lg:pl-6">
+    <div className="grid grid-cols-1 gap-6 px-4 pt-1 pb-6 sm:px-5 lg:h-full lg:grid-cols-2 lg:gap-10 lg:py-8 lg:pr-8 lg:pl-6">
       <div className="flex min-w-0 flex-col justify-center">
         <span className="font-dm-mono text-xs font-medium tracking-widest text-blue-600 uppercase">
           Step {step.number}

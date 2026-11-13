@@ -9,7 +9,7 @@ import { DriftingCloud } from "../motion/drifting-cloud";
 export const SkyStage = ({ children }: { children: React.ReactNode }) => (
   <div
     aria-hidden="true"
-    className="relative isolate flex min-h-120 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-b from-blue-500 via-blue-300 via-70% to-blue-200 px-5 py-8 sm:px-8"
+    className="relative isolate flex min-h-120 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-b from-blue-500 via-blue-300 via-70% to-blue-200 px-3 py-8 sm:px-8"
   >
     <div className="pointer-events-none absolute inset-0 -z-10 bg-radial from-white/25 to-transparent to-70%" />
     <DriftingCloud sizes="112px" className="top-5 right-4 -z-10 w-28" />

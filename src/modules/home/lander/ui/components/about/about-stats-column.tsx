@@ -33,19 +33,19 @@ const MinutesStat = () => (
 
 /** Dark call-to-action card with the agents stat. */
 const AgentsStat = () => (
-  <div className="flex items-center justify-between gap-4 rounded-3xl bg-slate-900 p-5 text-white">
-    <div className="flex items-center gap-4">
-      {/* Hidden only where the desktop column is at its narrowest */}
+  <div className="flex flex-col gap-4 rounded-3xl bg-slate-900 p-5 text-white max-lg:flex-wrap sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex min-w-0 items-center gap-4">
+      {/* Hidden only where the card is too narrow to seat the avatars */}
       <AvatarStack
         items={AGENT_AVATARS}
-        className="lg:max-xl:hidden"
+        className="max-sm:hidden lg:max-xl:hidden"
         avatarClassName="-ml-2.5 size-9 border-2 border-slate-900 text-xs"
       />
-      <div>
+      <div className="min-w-0">
         <b className="font-tight block text-2xl leading-none font-semibold tracking-tight">
           <CountUp {...ABOUT_STATS.agents} />
         </b>
-        <small className="text-xs whitespace-nowrap text-slate-400">
+        <small className="block text-xs text-slate-400">
           custom agents deployed
         </small>
       </div>
@@ -54,7 +54,7 @@ const AgentsStat = () => (
       asChild
       variant="light"
       size="md"
-      className="flex-none lg:size-10 lg:px-0"
+      className="flex-none max-sm:w-full lg:size-10 lg:px-0"
     >
       <MotionLink
         href={LANDING_ROUTES.signUp}

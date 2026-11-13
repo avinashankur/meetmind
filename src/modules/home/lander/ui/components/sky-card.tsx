@@ -17,7 +17,7 @@ export const SkyCard = ({
 }) => (
   <div
     className={cn(
-      "relative isolate flex flex-col gap-3 overflow-hidden rounded-3xl border border-slate-900/15 bg-sky-100 px-4 pt-6 pb-5 text-left text-slate-900 shadow-2xl shadow-blue-900/40",
+      "relative isolate flex flex-col gap-3 overflow-hidden rounded-3xl border border-slate-900/15 bg-sky-100 px-3 pt-6 pb-5 text-left text-slate-900 shadow-2xl shadow-blue-900/40 sm:px-4",
       className,
     )}
   >
@@ -46,8 +46,8 @@ interface SkyCardHeaderProps {
 export const SkyCardHeader = ({ eyebrow, title, chip }: SkyCardHeaderProps) => (
   // On narrow cards the chip wraps below rather than squeezing the title.
   <div className="flex flex-wrap items-start justify-between gap-2">
-    <div className="shrink-0">
-      <small className="font-dm-mono mb-0.5 block text-xs font-semibold tracking-wider whitespace-nowrap text-slate-600 uppercase">
+    <div className="min-w-0">
+      <small className="font-dm-mono mb-0.5 block text-xs font-semibold tracking-wider text-slate-600 uppercase">
         {eyebrow}
       </small>
       <b className="font-tight text-xl leading-tight font-semibold tracking-tight whitespace-nowrap text-slate-900">
