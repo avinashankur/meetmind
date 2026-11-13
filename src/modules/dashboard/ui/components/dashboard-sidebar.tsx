@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BotIcon, SparklesIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
-import { Logo } from "../../../../../public/logo";
+import { BrandLogo } from "@/components/brand/logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import DashboardUserButton from "./dashboard-user-button";
@@ -46,20 +46,7 @@ export const DashboardSidebar = () => {
     <Sidebar className="border-border bg-sidebar border-r">
       {/* Brand Header */}
       <SidebarHeader className="border-border/80 border-b px-4 py-3.5">
-        <Link
-          href="/"
-          className="group flex items-center gap-2.5 transition-opacity hover:opacity-85"
-        >
-          <Logo
-            size={26}
-            className="shrink-0 transition-transform group-hover:scale-105"
-          />
-          <div className="flex items-center gap-2">
-            <span className="text-primary text-base font-semibold tracking-tight">
-              MeetMind
-            </span>
-          </div>
-        </Link>
+        <BrandLogo tone="dark" size={26} />
       </SidebarHeader>
 
       {/* Main Navigation */}

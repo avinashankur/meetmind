@@ -15,7 +15,7 @@ import { SocialButton } from "../social-button";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowRight } from "lucide-react";
-import { Logo } from "../../../../../public/logo";
+import { BrandLogo } from "@/components/brand/logo";
 
 const formSchema = z.object({
   email: z.email(),
@@ -63,18 +63,7 @@ export const SignInView = () => {
   return (
     <div className="mx-auto w-full max-w-md">
       {/* Brand Anchor */}
-      <Link
-        href="/"
-        className="group mb-5 inline-flex items-center gap-2.5 transition-opacity hover:opacity-85"
-      >
-        <Logo
-          size={26}
-          className="shrink-0 transition-transform group-hover:scale-105"
-        />
-        <span className="text-primary text-base font-semibold tracking-tight">
-          MeetMind
-        </span>
-      </Link>
+      <BrandLogo tone="dark" size={26} className="mb-5" />
 
       <div className="mb-5">
         <div className="text-brand inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase">

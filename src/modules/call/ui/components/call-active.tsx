@@ -9,8 +9,8 @@ import {
   ToggleAudioPublishingButton,
   ToggleVideoPublishingButton,
 } from "@stream-io/video-react-sdk";
-import Image from "next/image";
 import Link from "next/link";
+import { LogoMark } from "@/components/brand/logo";
 import "@stream-io/video-react-sdk/dist/css/styles.css"; // Ensure styles are imported
 
 interface Props {
@@ -27,15 +27,10 @@ export const CallActive = ({ onLeave, meetingName }: Props) => {
         <div className="pointer-events-auto flex items-center gap-3">
           <Link
             href="/"
+            aria-label="MeetMind home"
             className="flex items-center justify-center rounded-xl bg-white/10 p-2.5 backdrop-blur-md transition-colors hover:bg-white/20"
           >
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={20}
-              height={20}
-              className="opacity-90"
-            />
+            <LogoMark size={20} className="opacity-90" />
           </Link>
           <div className="flex flex-col">
             <h1 className="text-sm font-semibold tracking-wide text-white/95">

@@ -21,7 +21,7 @@ import {
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
-import { Logo } from "../../../../../public/logo";
+import { BrandLogo } from "@/components/brand/logo";
 
 const formSchema = z
   .object({
@@ -85,18 +85,7 @@ export const SignUpView = () => {
       {/* Left Column: Industrial Brand & Telemetry Showcase (5 cols) */}
       <div className="space-y-4 lg:col-span-5">
         <div>
-          <Link
-            href="/"
-            className="group inline-flex items-center gap-2.5 transition-opacity hover:opacity-85"
-          >
-            <Logo
-              size={26}
-              className="shrink-0 transition-transform group-hover:scale-105"
-            />
-            <span className="text-primary text-base font-semibold tracking-tight">
-              MeetMind
-            </span>
-          </Link>
+          <BrandLogo tone="dark" size={26} />
 
           <h1 className="text-primary mt-2 text-2xl leading-tight font-normal tracking-tight sm:text-3xl lg:text-4xl">
             From conversation to{" "}
