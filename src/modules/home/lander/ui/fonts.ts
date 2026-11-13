@@ -5,8 +5,8 @@ import {
   Playfair_Display,
 } from "next/font/google";
 
-// Landing-only typefaces. Scoped to the landing root so dashboard routes
-// don't download them. Inter and Instrument Serif come from the root layout.
+// Landing typefaces. Scoped to the landing root and the auth layout (which
+// shares the landing look) so dashboard routes don't download them. Inter and Instrument Serif come from the root layout.
 
 const interTight = Inter_Tight({
   subsets: ["latin"],

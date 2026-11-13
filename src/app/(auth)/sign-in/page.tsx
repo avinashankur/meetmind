@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { SignInView } from "@/modules/auth/ui/views/sign-in-view";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { AUTH_REDIRECT } from "@/modules/auth/constants";
 
 export default async function SignInPage() {
   const session = await auth.api.getSession({
@@ -9,7 +10,7 @@ export default async function SignInPage() {
   });
 
   if (!!session) {
-    redirect("/");
+    redirect(AUTH_REDIRECT);
   }
 
   return (

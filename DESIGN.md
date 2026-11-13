@@ -241,3 +241,16 @@ To prevent visual clutter, harsh grids, and "box-inside-a-box" fatigue without l
 - **Zero Tolerance for Fake Specs or Pipelines**: Never invent speculative technical specifications, simulated hardware meters, or fake integration badges (e.g. fake "WebRTC Voice Stream Connected", fake "Meeting Synthesis Active", or hardcoded "Gemini 2.5 Flash" model tags) that do not exist in the database schema or active backend procedures. If a property is not part of the entity's real state, it must not be rendered.
 - **Eliminate Explanatory Copy Bloat**: Do not pad detail views with redundant, generic marketing descriptions (e.g., explaining what system instructions do or narrating why an agent exists). Entity pages should be utilitarian, focused, and concise.
 - **Show Genuine Related Data**: Prioritize authentic relationships from the data model—such as querying and displaying real meetings associated with an entity—over static, fabricated visual widgets.
+
+### 9. Auth Pages (Sign-in & Sign-up)
+
+Auth pages are the one application surface that uses the **landing look** (§4), so the hand-off from "Start free" feels continuous.
+
+- `src/app/(auth)/layout.tsx` renders the hero sky: the blue gradient and the cloud banks (no small drifting clouds, no frame-guide hairlines). It loads the landing fonts and wraps the page in `LandingMotionProvider`.
+- **No page chrome and no scrolling.** There is no top nav; a single glass back button (icon only, `ArrowLeft`, labelled with `AUTH_NAV.backHome`) floats at the very top-left and returns to the home page. The root is `h-svh` + `overflow-hidden` and `main` clips too, so neither page can scroll — keep vertical padding and control heights tight enough for a 1366×640 viewport.
+- Both routes render one centred card through `AuthShell`: a frosted glass frame around a white panel, with a `SparkleTile` that links home, a `font-tight` heading with a `TitleAccent` word, the form, and a `bg-slate-50` footer linking to the other page. `size="md"` (sign-in) is `max-w-md`; `size="lg"` (sign-up) is `max-w-xl` with name and email paired in one row.
+- The submit button is `LandingButton variant="dark"` (`AuthSubmitButton`, `h-11`) with the shine and arrow nudge; social buttons and fields are `h-10`.
+- **Light only.** The layout root carries `.theme-light`, which re-declares the light tokens and disables `dark:` variants for its subtree, so shared shadcn fields stay legible when the app is in dark mode. Use it for any future subtree that must stay light.
+- Copy, routes, `MIN_PASSWORD_LENGTH` and the post-auth destination (`AUTH_REDIRECT`) live in `src/modules/auth/constants.ts`. Email, password and OAuth flows all redirect there.
+- Sign-up asks only for name, email and password; the show/hide toggle replaces a confirm-password field.
+- Fields carry `name`, a real `<label>` and `autoComplete` (`email`, `name`, `current-password`, `new-password`). Request errors render through `AuthFormError` (`role="alert"`). No metrics, model names or infrastructure details on these pages.

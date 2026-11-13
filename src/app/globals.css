@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* `.theme-light` pins a subtree to light mode (e.g. the sky-themed auth pages). */
+@custom-variant dark (&:is(.dark *):not(.theme-light, .theme-light *));
 
 @theme inline {
   --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
@@ -57,7 +58,10 @@
     inset 0 -2px 4px rgba(0, 0, 0, 0.06);
 }
 
-:root {
+/* `.theme-light` re-declares the light tokens so a subtree stays light even
+   when <html> has `.dark`. */
+:root,
+.theme-light {
   --radius: 0.625rem;
   --background: #fafafa;
   --foreground: #202020;
@@ -94,6 +98,10 @@
   --sidebar-border: rgba(34, 34, 34, 0.08);
   --sidebar-ring: oklch(0.708 0 0);
   --autofill-bg: #fafafa;
+}
+
+.theme-light {
+  color-scheme: light;
 }
 
 .dark {

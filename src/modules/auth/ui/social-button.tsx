@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
+import { AUTH_REDIRECT } from "@/modules/auth/constants";
 
 type AuthProvider = "google" | "github";
 type ButtonProps = React.ComponentProps<typeof Button>;
@@ -28,7 +29,7 @@ export const SocialButton = ({
     await authClient.signIn.social(
       {
         provider: provider,
-        callbackURL: "/",
+        callbackURL: AUTH_REDIRECT,
       },
       {
         onSuccess: () => {
@@ -51,7 +52,7 @@ export const SocialButton = ({
       type="button"
       disabled={loading || props.disabled}
       className={cn(
-        "border-border bg-card/80 text-primary hover:border-primary/40 hover:bg-card h-11 w-full rounded-xl border font-mono text-xs tracking-wider uppercase shadow-xs backdrop-blur-sm transition-all active:scale-[0.99]",
+        "flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-xs transition-colors duration-300 hover:bg-slate-50 hover:text-slate-900",
         className,
       )}
       onClick={handleLogin}

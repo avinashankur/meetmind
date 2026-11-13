@@ -11,6 +11,9 @@ type PasswordFieldProps = {
   isAsterisk?: boolean;
   disabled?: boolean;
   description?: string;
+  /** e.g. "current-password" or "new-password", for password managers. */
+  autoComplete?: string;
+  className?: string;
 };
 
 export const PasswordField = ({
@@ -20,6 +23,8 @@ export const PasswordField = ({
   isAsterisk,
   disabled,
   description,
+  autoComplete,
+  className,
 }: PasswordFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -29,7 +34,7 @@ export const PasswordField = ({
       type="button"
       onClick={() => setShowPassword((prev) => !prev)}
       disabled={disabled}
-      className="text-neutral-500 hover:text-neutral-700 focus:outline-none"
+      className="text-muted-foreground hover:text-foreground rounded-sm transition-colors duration-300"
       aria-label={showPassword ? "Hide password" : "Show password"}
     >
       {showPassword ? (
@@ -50,6 +55,8 @@ export const PasswordField = ({
       description={description}
       type={showPassword ? "text" : "password"}
       suffix={toggleVisibilityButton}
+      autoComplete={autoComplete}
+      className={className}
     />
   );
 };

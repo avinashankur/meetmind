@@ -11,6 +11,7 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import InfoTooltip from "./info-tooltip";
 
 type FormInputProps = {
@@ -94,7 +95,10 @@ const FormInput: React.FC<FormInputProps> = memo(
                     onChange(e);
                     onInputChange(e.target.value);
                   }}
-                  className={`${className} placeholder:text-gray-light h-12 rounded-xl tracking-wider`}
+                  className={cn(
+                    "placeholder:text-gray-light h-12 rounded-xl tracking-wider",
+                    className,
+                  )}
                   {...fieldProps}
                   {...rest}
                 />
