@@ -33,7 +33,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       variant="ghost"
       size="icon-sm"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={`size-8 rounded-full border border-zinc-200/80 bg-zinc-50/50 text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${className ?? ""}`}
+      className={`size-8 rounded-lg border border-zinc-200/80 bg-zinc-50/50 text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-950 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${className ?? ""}`}
       aria-label="Toggle theme"
     >
       {isDark ? (

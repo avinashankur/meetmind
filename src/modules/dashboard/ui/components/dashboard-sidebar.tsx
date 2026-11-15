@@ -91,7 +91,7 @@ export const DashboardSidebar = () => {
                         asChild
                         isActive={active}
                         className={cn(
-                          "h-10 gap-3 rounded-xl px-2.5 transition-colors",
+                          "h-10 gap-1 rounded-lg px-2.5 transition-colors",
                           active
                             ? "border-border/60 bg-card text-foreground hover:bg-card active:bg-card active:text-foreground data-[active=true]:bg-card data-[active=true]:text-foreground border shadow-2xs"
                             : "text-muted-foreground hover:bg-card/60 hover:text-foreground",
@@ -99,14 +99,11 @@ export const DashboardSidebar = () => {
                       >
                         <Link
                           href={item.href}
-                          className="flex items-center gap-3"
+                          className="flex items-center gap-2"
                         >
                           <span
                             className={cn(
                               "flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors",
-                              active
-                                ? "bg-brand/10 text-brand"
-                                : "text-muted-foreground group-hover/menu-item:text-foreground",
                             )}
                           >
                             <item.icon className="size-4" />

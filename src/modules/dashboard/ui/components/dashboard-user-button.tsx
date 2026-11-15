@@ -120,7 +120,7 @@ export default function DashboardUserButton() {
         <ChevronDownIcon className={chevronClassName} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="border-border/80 bg-card/98 text-card-foreground dark:bg-card/90 min-w-56 rounded-xl p-1.5 shadow-xl backdrop-blur-md"
+        className="border-border/80 bg-card/98 text-card-foreground dark:bg-card/90 w-(--radix-dropdown-menu-trigger-width) min-w-0 rounded-xl p-1.5 shadow-xl backdrop-blur-md"
         align="end"
         side="top"
         sideOffset={6}
