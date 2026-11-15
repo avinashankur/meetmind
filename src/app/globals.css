@@ -53,9 +53,8 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --shadow-button-inset:
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.06);
+  /* Primary button: inset sheen + lift. The value flips per theme below. */
+  --shadow-button-primary: var(--button-primary-shadow);
 }
 
 /* `.theme-light` re-declares the light tokens so a subtree stays light even
@@ -97,6 +96,11 @@
   --sidebar-accent-foreground: #202020;
   --sidebar-border: rgba(34, 34, 34, 0.08);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Primary button reads as a near-black key in light mode: a soft top
+     highlight, a shadowed lower inner edge and a hairline lift. */
+  --button-primary-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.16),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.14);
   --autofill-bg: #fafafa;
 }
 
@@ -138,6 +142,11 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.07);
   --sidebar-ring: oklch(0.556 0 0);
+  /* In dark mode the primary button is white: the inset becomes a delicate
+     lower inner shade instead of a highlight. */
+  --button-primary-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.4);
   --autofill-bg: #18181a;
 }
 

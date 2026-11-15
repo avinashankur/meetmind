@@ -38,6 +38,19 @@ One logo exists for every surface: a white four-point sparkle on a `blue-400 →
 - The landing's `brand-logo.tsx` keeps only `SparkleTile` (mark at `xs`/`sm`/`lg` for inline use in copy) and a `BrandLogo` wrapper that applies the landing's `font-tight` wordmark.
 - Keep the mark legible at 16px: the sparkle is a single solid path with no fine inner detail.
 
+### 2.2 Primary button
+
+`src/components/common/primary-button.tsx` owns the app's one primary action style (`PrimaryButton`), used for the sidebar's "New meeting", form submits and other single main actions.
+
+| Part      | Rule                                                                                                                                                                                                |
+| :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Surface   | `bg-primary text-primary-foreground`, `rounded-md` — deliberately squarer than cards and nav rows.                                                                                                  |
+| Depth     | `shadow-button-primary`, mapped to `--button-primary-shadow`. The value is re-declared per theme: a top sheen on the near-black light-mode key and an inner lower shade on the white dark-mode key. |
+| Sizes     | `sm` (`h-8`), `default` (`h-9`), `lg` (`h-10`), `icon` (`size-9`). `asChild` renders links with the same look.                                                                                      |
+| Behaviour | `hover:bg-primary/90`, `focus-visible:ring-2 focus-visible:ring-ring/50`, disabled `opacity-50`.                                                                                                    |
+
+Do not hand-roll a primary action with `Button` plus one-off `bg-primary`/shadow classes; extend `PrimaryButton` instead, and keep new shadow values in `globals.css`.
+
 ---
 
 ## 3. Application Theme Tokens
@@ -235,6 +248,11 @@ To prevent visual clutter, harsh grids, and "box-inside-a-box" fatigue without l
   - The main dashboard canvas is the bright, focused workspace (`--background: #fafafa` in light mode, `#121213` in dark mode).
   - Content cards sit elevated on the canvas (`--card: #ffffff` in light mode, `#18181a` in dark mode) with subtle hairline borders (`border-border/50`).
   - Active navigation buttons inside the sidebar pop cleanly via elevated card styling (`bg-card border-border shadow-2xs`).
+- **Sidebar Composition** (`dashboard-sidebar.tsx`):
+  - A compact `h-14` brand header carries the shared `BrandLogo` (linking to `/meetings`, the app home) over a soft `from-brand/10` wash that fades into the recessed column. No header border: the wash and spacing do the separating.
+  - One full-width primary action (`New meeting` via `PrimaryButton`) sits above the navigation, mirroring the landing's single clear CTA. It opens the existing `NewMeetingDialog`; it never duplicates creation logic.
+  - Navigation is grouped under a sentence-case label (`Workspace`) inside a `nav` landmark. Rows are `h-10 rounded-xl`; the active row is an elevated card with a `bg-brand/10` icon tile. Icons in inactive rows stay `text-muted-foreground`.
+  - The footer is the user chip plus sign-out. Never render links to routes that do not exist (`/upgrade`, billing) or plan tiers that do not exist; omit the section instead.
 
 ### 8. Anti-Fabrication & Text Restraint (Honest Data Architecture)
 

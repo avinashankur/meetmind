@@ -1,24 +1,29 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { BotIcon, PlusIcon, VideoIcon } from "lucide-react";
+
+import { BrandLogo } from "@/components/brand/logo";
+import { PrimaryButton } from "@/components/common/primary-button";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { BotIcon, SparklesIcon, VideoIcon } from "lucide-react";
-import Link from "next/link";
-import { BrandLogo } from "@/components/brand/logo";
-import { usePathname } from "next/navigation";
+import { NewMeetingDialog } from "@/modules/meetings/ui/components/new-meeting-dialog";
 import { cn } from "@/lib/utils";
 import DashboardUserButton from "./dashboard-user-button";
 
-const firstSection = [
+const navigation = [
   {
     icon: VideoIcon,
     label: "Meetings",
@@ -31,108 +36,97 @@ const firstSection = [
   },
 ];
 
-const secondSection = [
-  {
-    icon: SparklesIcon,
-    label: "Upgrade",
-    href: "/upgrade",
-  },
-];
-
 export const DashboardSidebar = () => {
   const pathname = usePathname();
+  const [isNewMeetingOpen, setIsNewMeetingOpen] = useState(false);
+
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <Sidebar className="border-border bg-sidebar border-r">
-      {/* Brand Header */}
-      <SidebarHeader className="border-border/80 border-b px-4 py-3.5">
-        <BrandLogo tone="dark" size={26} />
+    <Sidebar className="border-sidebar-border bg-sidebar border-r">
+      {/* Brand header. The soft brand wash echoes the landing sky. */}
+      <SidebarHeader className="relative h-14 shrink-0 flex-row items-center px-4">
+        <span
+          aria-hidden="true"
+          className="from-brand/10 pointer-events-none absolute inset-0 bg-linear-to-b to-transparent"
+        />
+        <BrandLogo
+          href="/meetings"
+          size={26}
+          className="relative"
+          wordmarkClassName="text-base font-semibold tracking-tight"
+        />
       </SidebarHeader>
 
-      {/* Main Navigation */}
-      <SidebarContent className="py-2">
-        <SidebarGroup>
+      {/* Mounted on demand so the agent list is only fetched when opened. */}
+      {isNewMeetingOpen && (
+        <NewMeetingDialog open onOpenChange={setIsNewMeetingOpen} />
+      )}
+
+      <SidebarContent className="gap-0 pt-3">
+        <div className="px-3 pb-5">
+          <PrimaryButton
+            onClick={() => setIsNewMeetingOpen(true)}
+            className="w-full"
+          >
+            <PlusIcon className="size-4" />
+            New meeting
+          </PrimaryButton>
+        </div>
+
+        <SidebarGroup className="p-0">
+          <SidebarGroupLabel className="text-muted-foreground h-7 px-3 text-xs font-medium">
+            Workspace
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1 px-1">
-              {firstSection.map((item) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
+            <nav aria-label="Workspace">
+              <SidebarMenu className="gap-1 px-2">
+                {navigation.map((item) => {
+                  const active = isActive(item.href);
 
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        "h-10 w-full rounded-xl px-3 transition-colors",
-                        isActive
-                          ? "bg-card text-foreground border-border border font-medium shadow-2xs"
-                          : "text-muted-foreground hover:text-foreground hover:bg-card/50",
-                      )}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex items-center gap-3"
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        className={cn(
+                          "h-10 gap-3 rounded-xl px-2.5 transition-colors",
+                          active
+                            ? "border-border/60 bg-card text-foreground hover:bg-card active:bg-card active:text-foreground data-[active=true]:bg-card data-[active=true]:text-foreground border shadow-2xs"
+                            : "text-muted-foreground hover:bg-card/60 hover:text-foreground",
+                        )}
                       >
-                        <item.icon
-                          className={cn(
-                            "size-4 shrink-0 transition-colors",
-                            isActive ? "text-brand" : "text-muted-foreground",
-                          )}
-                        />
-                        <span className="text-sm tracking-tight">
-                          {item.label}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Upgrade Section */}
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-1 px-1">
-              {secondSection.map((item) => {
-                const isActive = pathname === item.href;
-
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        "h-10 w-full rounded-xl px-3 transition-colors",
-                        isActive
-                          ? "bg-card text-foreground border-border border font-medium shadow-2xs"
-                          : "text-muted-foreground hover:text-foreground hover:bg-card/50",
-                      )}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex items-center gap-3"
-                      >
-                        <item.icon className="size-4 shrink-0 text-amber-500" />
-                        <span className="text-sm tracking-tight">
-                          {item.label}
-                        </span>
-                        <span className="ml-auto rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] font-medium tracking-wider text-amber-600 uppercase dark:text-amber-400">
-                          Pro
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+                        <Link
+                          href={item.href}
+                          className="flex items-center gap-3"
+                        >
+                          <span
+                            className={cn(
+                              "flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors",
+                              active
+                                ? "bg-brand/10 text-brand"
+                                : "text-muted-foreground group-hover/menu-item:text-foreground",
+                            )}
+                          >
+                            <item.icon className="size-4" />
+                          </span>
+                          <span className="text-sm font-medium">
+                            {item.label}
+                          </span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </nav>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      {/* User Footer */}
-      <SidebarFooter className="border-border/80 border-t p-3">
+      {/* User footer */}
+      <SidebarFooter className="border-sidebar-border/70 border-t p-3">
         <DashboardUserButton />
       </SidebarFooter>
     </Sidebar>

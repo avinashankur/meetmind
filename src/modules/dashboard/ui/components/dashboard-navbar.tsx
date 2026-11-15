@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 const pageTitles: Record<string, string> = {
   "/meetings": "Meetings",
   "/agents": "Agents",
-  "/upgrade": "Upgrade",
 };
 
 export const DashboardNavbar = () => {
