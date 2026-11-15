@@ -1,5 +1,6 @@
 "use client";
 
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import { PlusIcon, RotateCcwIcon } from "lucide-react";
 import { NewMeetingDialog } from "./new-meeting-dialog";
@@ -50,13 +51,13 @@ export const MeetingsListHeader = () => {
           )}
         </div>
 
-        <Button
+        <PrimaryButton
           onClick={() => setIsDialogOpen(true)}
-          className="bg-primary text-primary-foreground flex h-9 shrink-0 items-center gap-2 self-start rounded-md px-4 text-sm font-medium transition-all hover:opacity-90 sm:self-auto"
+          className="self-start sm:self-auto"
         >
           <PlusIcon className="size-4" />
           <span>New meeting</span>
-        </Button>
+        </PrimaryButton>
       </div>
     </>
   );

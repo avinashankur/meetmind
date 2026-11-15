@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import {
   PlusIcon,
@@ -84,13 +85,13 @@ export const AgentsListHeader = () => {
             </button>
           </div>
 
-          <Button
+          <PrimaryButton
             onClick={() => setDialogOpen(true)}
-            className="bg-primary text-primary-foreground flex h-9 shrink-0 cursor-pointer items-center gap-2 rounded-lg px-4 text-sm font-medium shadow-xs transition-all hover:opacity-90"
+            className="self-start sm:self-auto"
           >
             <PlusIcon className="size-4" />
             <span>New agent</span>
-          </Button>
+          </PrimaryButton>
         </div>
       </div>
     </>

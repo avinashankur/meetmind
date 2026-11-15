@@ -30,6 +30,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -269,16 +270,12 @@ export const AgentIdView = ({ agentId }: Props) => {
               <span>Edit</span>
             </Button>
 
-            <Button
-              asChild
-              size="sm"
-              className="bg-primary text-primary-foreground h-8 cursor-pointer gap-1.5 rounded-lg px-3 text-xs font-medium shadow-xs hover:opacity-90"
-            >
+            <PrimaryButton asChild size="sm">
               <Link href={`/meetings?agentId=${data.id}`}>
                 <VideoIcon className="size-3" />
                 <span>Schedule meeting</span>
               </Link>
-            </Button>
+            </PrimaryButton>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -512,16 +509,12 @@ export const AgentIdView = ({ agentId }: Props) => {
               <div className="border-border border-b" />
 
               <div className="space-y-2">
-                <Button
-                  asChild
-                  size="sm"
-                  className="bg-primary text-primary-foreground h-8 w-full cursor-pointer text-xs shadow-xs"
-                >
+                <PrimaryButton asChild size="sm" className="w-full">
                   <Link href={`/meetings?agentId=${data.id}`}>
-                    <VideoIcon className="mr-1.5 size-3.5" />
+                    <VideoIcon className="size-3.5" />
                     <span>Schedule meeting</span>
                   </Link>
-                </Button>
+                </PrimaryButton>
 
                 <Button
                   variant="outline"

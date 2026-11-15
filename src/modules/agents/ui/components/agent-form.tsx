@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/form/form-input";
 import GeneratedAvatar from "@/components/generated-avatar";
 import FormTextarea from "@/components/form/form-textarea";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { AGENT_TEMPLATES, AgentTemplate } from "../../constants";
@@ -193,10 +194,7 @@ export const AgentForm = ({
               Cancel
             </Button>
           )}
-          <Button
-            disabled={isPending}
-            className="bg-primary text-primary-foreground flex h-9 cursor-pointer items-center gap-2 rounded-lg px-4 text-sm font-medium shadow-xs transition-all hover:opacity-90"
-          >
+          <PrimaryButton disabled={isPending}>
             {isPending && <Spinner className="size-3.5" />}
             <span>
               {isPending
@@ -207,7 +205,7 @@ export const AgentForm = ({
                   ? "Save Changes"
                   : "Create Agent"}
             </span>
-          </Button>
+          </PrimaryButton>
         </div>
       </form>
     </FormProvider>

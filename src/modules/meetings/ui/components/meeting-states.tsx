@@ -3,7 +3,7 @@ import { CircleXIcon, VideoIcon } from "lucide-react";
 
 import GeneratedAvatar from "@/components/generated-avatar";
 
-import { Button } from "@/components/ui/button";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Empty,
@@ -43,12 +43,12 @@ export const UpcomingState = ({ meetingId, agentName }: CallStateProps) => (
       </EmptyDescription>
     </EmptyHeader>
     <EmptyContent>
-      <Button asChild>
+      <PrimaryButton asChild>
         <Link href={`/call/${meetingId}`}>
           <VideoIcon data-icon="inline-start" />
           Start call
         </Link>
-      </Button>
+      </PrimaryButton>
     </EmptyContent>
   </Empty>
 );
@@ -63,12 +63,12 @@ export const ActiveState = ({ meetingId, agentName }: CallStateProps) => (
       </EmptyDescription>
     </EmptyHeader>
     <EmptyContent>
-      <Button asChild>
+      <PrimaryButton asChild>
         <Link href={`/call/${meetingId}`}>
           <VideoIcon data-icon="inline-start" />
           Join call
         </Link>
-      </Button>
+      </PrimaryButton>
     </EmptyContent>
   </Empty>
 );

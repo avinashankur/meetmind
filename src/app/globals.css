@@ -53,8 +53,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* Primary button: inset sheen + lift. The value flips per theme below. */
-  --shadow-button-primary: var(--button-primary-shadow);
+  /* Primary button gradient, mirroring the landing CTA. */
+  --color-button-top: var(--button-top);
+  --color-button-bottom: var(--button-bottom);
 }
 
 /* `.theme-light` re-declares the light tokens so a subtree stays light even
@@ -96,11 +97,10 @@
   --sidebar-accent-foreground: #202020;
   --sidebar-border: rgba(34, 34, 34, 0.08);
   --sidebar-ring: oklch(0.708 0 0);
-  /* Primary button reads as a near-black key in light mode: a soft top
-     highlight, a shadowed lower inner edge and a hairline lift. */
-  --button-primary-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.16),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.14);
+  /* Primary button: the landing CTA's near-black gloss (zinc-700 → zinc-950).
+     The hairline top sheen is applied in PrimaryButton. */
+  --button-top: #3f3f46;
+  --button-bottom: #09090b;
   --autofill-bg: #fafafa;
 }
 
@@ -142,11 +142,11 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.07);
   --sidebar-ring: oklch(0.556 0 0);
-  /* In dark mode the primary button is white: the inset becomes a delicate
-     lower inner shade instead of a highlight. */
-  --button-primary-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.4);
+  /* Dark mode keeps the white key — it is the apex action against the
+     near-black canvas. The lower stop is deeper than before so the gloss
+     actually reads instead of looking like a flat white pill. */
+  --button-top: #ffffff;
+  --button-bottom: #a1a1aa;
   --autofill-bg: #18181a;
 }
 

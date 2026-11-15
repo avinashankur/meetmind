@@ -42,14 +42,15 @@ One logo exists for every surface: a white four-point sparkle on a `blue-400 →
 
 `src/components/common/primary-button.tsx` owns the app's one primary action style (`PrimaryButton`), used for the sidebar's "New meeting", form submits and other single main actions.
 
-| Part      | Rule                                                                                                                                                                                                |
-| :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Surface   | `bg-primary text-primary-foreground`, `rounded-md` — deliberately squarer than cards and nav rows.                                                                                                  |
-| Depth     | `shadow-button-primary`, mapped to `--button-primary-shadow`. The value is re-declared per theme: a top sheen on the near-black light-mode key and an inner lower shade on the white dark-mode key. |
-| Sizes     | `sm` (`h-8`), `default` (`h-9`), `lg` (`h-10`), `icon` (`size-9`). `asChild` renders links with the same look.                                                                                      |
-| Behaviour | `hover:bg-primary/90`, `focus-visible:ring-2 focus-visible:ring-ring/50`, disabled `opacity-50`.                                                                                                    |
+| Part      | Rule                                                                                                                                                                                           |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Surface   | `bg-linear-to-b from-button-top to-button-bottom text-primary-foreground`, `rounded-md` — squarer than cards and nav rows.                                                                     |
+| Depth     | The landing CTA's gloss: `shadow-lg shadow-black/30` for the lift plus a hairline `inset-shadow-xs inset-shadow-white/20` top sheen. No shaded inner band.                                     |
+| Theme     | Light keeps the dark gloss (zinc-700 → zinc-950, white text). Dark keeps the white key but deepens the lower stop (white → zinc-400, dark text) so the gradient reads instead of looking flat. |
+| Sizes     | `sm` (`h-8`), `default` (`h-9`), `lg` (`h-10`), `icon` (`size-9`). `asChild` renders links with the same look.                                                                                 |
+| Behaviour | `hover:brightness-110 dark:hover:brightness-95`, `focus-visible:ring-2 focus-visible:ring-ring/50`, disabled `opacity-50`.                                                                     |
 
-Do not hand-roll a primary action with `Button` plus one-off `bg-primary`/shadow classes; extend `PrimaryButton` instead, and keep new shadow values in `globals.css`.
+Do not hand-roll a primary action with `Button` plus one-off gradient/shadow classes; extend `PrimaryButton` instead, and keep new palette values in `globals.css`.
 
 ---
 

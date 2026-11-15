@@ -12,6 +12,7 @@ import { columns } from "../components/columns";
 import { AgentCardsGrid } from "@/modules/agents/ui/components/agent-cards-grid";
 import { NewAgentDialog } from "../components/new-agent-dialog";
 import { AGENT_TEMPLATES } from "../../constants";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -166,13 +167,10 @@ export const AgentsView = () => {
           </p>
 
           <div className="mt-6 flex justify-center">
-            <Button
-              onClick={handleOpenBlank}
-              className="bg-primary text-primary-foreground flex h-9 cursor-pointer items-center gap-2 rounded-lg px-4 text-sm font-medium shadow-xs transition-all hover:opacity-90"
-            >
+            <PrimaryButton onClick={handleOpenBlank}>
               <PlusIcon className="size-4" />
               <span>Create agent</span>
-            </Button>
+            </PrimaryButton>
           </div>
 
           {/* Quick Starter Templates - Subtle card borders */}

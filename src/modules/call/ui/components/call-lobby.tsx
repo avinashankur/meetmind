@@ -11,6 +11,7 @@ import {
 import "@stream-io/video-react-sdk/dist/css/styles.css";
 import { authClient } from "@/lib/auth-client";
 import { generateAvatarUri } from "@/lib/avatar";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -80,10 +81,10 @@ export const CallLobby = ({ onJoin }: Props) => {
           <Button variant="outline" asChild>
             <Link href={"/meetings"}>Cancel</Link>
           </Button>
-          <Button onClick={onJoin}>
+          <PrimaryButton onClick={onJoin}>
             <LogInIcon />
             Join
-          </Button>
+          </PrimaryButton>
         </div>
       </div>
     </div>

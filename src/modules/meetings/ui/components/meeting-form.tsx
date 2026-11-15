@@ -6,6 +6,7 @@ import { meetingsInsertSchema } from "../../schema";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/form/form-input";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -165,16 +166,13 @@ export const MeetingForm = ({
                 Cancel
               </Button>
             )}
-            <Button
-              disabled={isPending}
-              className="bg-primary text-primary-foreground h-9 rounded-md px-4 text-sm font-medium hover:opacity-90"
-            >
+            <PrimaryButton disabled={isPending}>
               {isPending
                 ? "Processing..."
                 : isEdit
                   ? "Update meeting"
                   : "Create meeting"}
-            </Button>
+            </PrimaryButton>
           </div>
         </form>
       </FormProvider>

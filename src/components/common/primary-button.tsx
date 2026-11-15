@@ -5,20 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /*
- * The app's primary action. It is deliberately squarer than the surrounding
- * cards and carries an inset sheen plus a soft lift (see `--button-primary-shadow`
- * in globals.css), so it reads as a physical button in both themes: near-black
- * in light mode, white in dark mode.
+ * The app's primary action, modelled on the landing page's dark CTA: a
+ * top-lit gradient, a hairline inset sheen and a soft drop shadow. The
+ * stops flip per theme: near-black in light mode, a white key with a
+ * deeper lower stop in dark mode so the gloss stays visible on dark.
  */
 const primaryButtonVariants = cva(
-  "bg-primary text-primary-foreground shadow-button-primary inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors outline-none hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "bg-linear-to-b from-button-top to-button-bottom text-primary-foreground inset-shadow-xs inset-shadow-white/20 shadow-lg shadow-black/30 inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 font-medium whitespace-nowrap outline-none transition duration-300 hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:hover:brightness-95 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       size: {
-        sm: "h-8 rounded-md px-3 text-sm",
-        default: "h-9 rounded-md px-4 text-sm",
-        lg: "h-10 rounded-md px-5 text-sm",
-        icon: "size-9 rounded-md",
+        sm: "h-8 rounded-lg px-3 text-sm",
+        default: "h-9 rounded-lg px-4 text-sm",
+        lg: "h-10 rounded-lg px-5 text-sm",
+        icon: "size-9 rounded-lg",
       },
     },
     defaultVariants: {

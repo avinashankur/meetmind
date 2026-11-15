@@ -14,6 +14,7 @@ import {
 import { useTRPC } from "@/trpc/client";
 import { DataTable } from "@/components/data-table";
 import { DataPagination } from "@/components/data-pagination";
+import { PrimaryButton } from "@/components/common/primary-button";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -82,10 +83,10 @@ export const MeetingsView = () => {
                 Reset filters
               </Button>
             ) : (
-              <Button size="sm" onClick={() => setIsCreateOpen(true)}>
+              <PrimaryButton size="sm" onClick={() => setIsCreateOpen(true)}>
                 <PlusIcon data-icon="inline-start" />
                 New meeting
-              </Button>
+              </PrimaryButton>
             )}
           </EmptyContent>
         </Empty>

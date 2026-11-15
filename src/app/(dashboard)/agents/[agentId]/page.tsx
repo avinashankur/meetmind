@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { Button } from "@/components/ui/button";
+import { PrimaryButton } from "@/components/common/primary-button";
 import Link from "next/link";
 
 interface Props {
@@ -119,12 +120,9 @@ function AgentIdErrorState() {
         >
           <Link href="/agents">Back to Agents</Link>
         </Button>
-        <Button
-          onClick={() => window.location.reload()}
-          className="bg-primary text-primary-foreground h-9 rounded-lg"
-        >
+        <PrimaryButton onClick={() => window.location.reload()}>
           Try Again
-        </Button>
+        </PrimaryButton>
       </div>
     </div>
   );
